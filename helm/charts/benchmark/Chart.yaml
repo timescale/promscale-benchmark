@@ -1,0 +1,26 @@
+apiVersion: v2
+name: benchmark
+description: A Helm chart to benchmark Promscale
+home: https://github.com/timescale/promscale-benchmark
+sources:
+  - https://github.com/timescale/promscale-benchmark
+maintainers:
+  - name: timescale
+    url: https://www.timescale.com/
+keywords:
+  - observability
+  - monitoring
+  - tracing
+  - opentelemetry
+  - benchmark
+version: 0.1.0
+kubeVersion: ">= 1.23.0"
+dependencies:
+  - name: tobs
+    condition: tobs.enabled
+    version: 14.11.1
+    repository: https://charts.timescale.com
+  - name: avalanche
+    condition: avalanche.enabled
+    version: 0.3.0
+    repository: https://charts.timescale.com
