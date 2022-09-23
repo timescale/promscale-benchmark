@@ -1,0 +1,11 @@
+# A configuration file for https://github.com/helm/chart-testing
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+target-branch: main
+chart-dirs:
+  - helm/charts
+chart-repos:
+  - timescale=https://charts.timescale.com
+# Some of tests require longer than default timeout
+helm-extra-args: --timeout 15m
+print-logs: false

@@ -21,6 +21,10 @@ cert-manager: start-kind
 	# Wait for pods to be up and running
 	kubectl wait --timeout=120s --for=condition=ready pod -l app.kubernetes.io/instance=cert-manager -n cert-manager
 
+.PHONY: lint
+lint:  ## Lint helm chart using ct (chart-testing).
+	ct lint --config ct.yaml
+
 create-namespace:
 	kubectl create ns $(NS)
 
