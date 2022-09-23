@@ -2,7 +2,7 @@ KUBE_VERSION ?= 1.25
 KIND_CONFIG ?= ./testdata/kind-$(KUBE_VERSION).yaml
 CERT_MANAGER_VERSION ?= v1.9.1
 
-all: docs helm-install
+all: cert-manager remote-write
 
 .PHONY: delete-kind
 delete-kind:  ## This is a phony target that is used to delete the local kubernetes kind cluster.
@@ -33,7 +33,7 @@ helm-repo:
 	helm repo update timescale
 
 .PHONY: remote-write
-bench: helm-repo
+remote-write: helm-repo
 	NS=bench $(MAKE) create-namespace
 	helm install tobs helm/charts/benchmark/ \
 		--wait \
@@ -42,7 +42,7 @@ bench: helm-repo
 		-f helm/values/benchmark-avalanche-only.yaml
 
 .PHONY: promscale
-bench: helm-repo
+promscale: helm-repo
 	NS=bench $(MAKE) create-namespace
 	helm install tobs helm/charts/benchmark/ \
 		--wait \
