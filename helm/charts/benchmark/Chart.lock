@@ -1,9 +1,9 @@
 dependencies:
 - name: tobs
   repository: https://charts.timescale.com
-  version: 14.11.1
+  version: 14.13.1
 - name: avalanche
   repository: https://charts.timescale.com
-  version: 0.3.0
-digest: sha256:324cedc745096a4fe1faca0c7a20690ac8c033d423b0b272ff2cbdb3fc313cb2
-generated: "2022-09-22T15:10:07.239263-05:00"
+  version: 0.4.0
+digest: sha256:f4b75b53fbaef0dc4e35ba0be96d38be4fe93a031e0bee30a5c3103bd879a399
+generated: "2022-10-04T09:10:03.759244-05:00"

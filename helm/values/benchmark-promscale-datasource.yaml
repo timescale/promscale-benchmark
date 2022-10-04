@@ -3,10 +3,6 @@ tobs:
   namespaceOverride: ""
   timescaledb-single:
     enabled: &dbEnabled true
-    image:
-      repository: timescale/timescaledb-ha
-      tag: pg14.5-ts2.8.0-p1
-      pullPolicy: IfNotPresent
     env:
       - name: TSTUNE_PROFILE
         value: promscale
@@ -26,17 +22,10 @@ tobs:
         memory: 2Gi
     prometheus:
       enabled: true
-      image:
-        repository: quay.io/prometheuscommunity/postgres-exporter
-        tag: v0.11.1
     podMonitor:
       enabled: true
   promscale:
     enabled: true
-    image:
-      repository: timescale/promscale
-      tag: 0.14.0
-      pullPolicy: IfNotPresent
     extraArgs:
       - "--metrics.high-availability=false"
     extraEnv:
@@ -74,14 +63,7 @@ tobs:
     alertmanager:
       enabled: false
     prometheusOperator:
-      image:
-        repository: quay.io/prometheus-operator/prometheus-operator
-        tag: v0.59.2
-        pullPolicy: IfNotPresent
       prometheusConfigReloader:
-        image:
-          repository: quay.io/prometheus-operator/prometheus-config-reloader
-          tag: v0.59.2
         resources:
           requests:
             cpu: 100m
@@ -98,9 +80,6 @@ tobs:
           cpu: 10m
     prometheus:
       prometheusSpec:
-        image:
-          repository: quay.io/prometheus/prometheus
-          tag: v2.38.0
         scrapeInterval: "1m"
         scrapeTimeout: "10s"
         evaluationInterval: "1m"
@@ -127,10 +106,6 @@ tobs:
           key: additional-scrape-config.yaml
     grafana:
       enabled: true
-      image:
-        repository: grafana/grafana
-        tag: 9.1.6
-        pullPolicy: IfNotPresent
       resources:
         limits:
           cpu: 200m
@@ -178,10 +153,6 @@ tobs:
           host: "{{ .Release.Name }}.{{ .Release.Namespace }}.svc"
           port: 5432
     kube-state-metrics:
-      image:
-        repository: registry.k8s.io/kube-state-metrics/kube-state-metrics
-        tag: v2.6.0
-        pullPolicy: IfNotPresent
       prometheusScrape: false
       resources:
         limits:
@@ -191,10 +162,6 @@ tobs:
           cpu: 10m
           memory: 30Mi
     prometheus-node-exporter:
-      image:
-        repository: quay.io/prometheus/node-exporter
-        tag: v1.3.1
-        pullPolicy: IfNotPresent
       service:
         annotations:
           prometheus.io/scrape: "false"
@@ -215,6 +182,7 @@ avalanche:
     pullPolicy: Always
   replicaCount: 1
   extraArgs:
+    - --const-label=avalanche_replica=$(POD_NAME)
     - --metric-count=100
     - --label-count=10
     - --series-count=10
