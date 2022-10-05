@@ -13,6 +13,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up chart-testing
-        uses: nhudson/chart-testing-action@main
+        uses: helm/chart-testing-action@v2.3.1
       - name: Run chart-testing (lint)
         run: make lint

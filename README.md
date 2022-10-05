@@ -57,7 +57,7 @@ make cert-manager
 Verify that you have access to the local cluster
 
 ```shell
-kubeclt get nodes
+kubectl get nodes
 ```
 
 We are using Helm to install both tools.  We do provide a basic `values.yaml`
@@ -82,14 +82,11 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "timescale" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-NS=bench /usr/bin/make create-namespace
-kubectl create ns bench
-namespace/bench created
-
 helm install tobs helm/charts/benchmark/ \
   --wait \
   --timeout 15m \
   --namespace bench \
+  --create-namespace \
   -f helm/values/benchmark-avalanche-only.yaml
 ```
 
@@ -111,10 +108,11 @@ tobs-timescaledb-0                                     2/2     Running     0    
 ### Avalanche Configuration
 
 We are setting the following Avalanche flags by default.  Please read over the
-[documentation](https://github.com/timescale/helm-charts/blob/c669a2b9c4312f978c958d31f94c867edb690c8c/charts/avalanche/values.yaml#L14)
+[documentation](https://github.com/timescale/helm-charts/blob/main/charts/avalanche/values.yaml#L14)
 and adjust your tests accordingly.
 
 ```shell
+    - --const-label=avalanche_replica=$(POD_NAME)
     - --metric-count=100
     - --label-count=10
     - --series-count=10

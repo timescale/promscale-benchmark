@@ -1,4 +1,4 @@
-KUBE_VERSION ?= 1.25
+KUBE_VERSION ?= 1.23
 KIND_CONFIG ?= ./testdata/kind-$(KUBE_VERSION).yaml
 CERT_MANAGER_VERSION ?= v1.9.1
 
@@ -25,30 +25,36 @@ cert-manager: start-kind
 lint:  ## Lint helm chart using ct (chart-testing).
 	ct lint --config ct.yaml
 
-create-namespace:
-	kubectl create ns $(NS)
-
 helm-repo:
 	helm repo add timescale 'https://charts.timescale.com'
 	helm repo update timescale
+	helm dep up helm/charts/benchmark
 
 .PHONY: remote-write
 remote-write: helm-repo
-	NS=bench $(MAKE) create-namespace
 	helm install tobs helm/charts/benchmark/ \
 		--wait \
 		--timeout 15m \
 		--namespace bench \
+		--create-namespace \
 		-f helm/values/benchmark-avalanche-only.yaml
 
 .PHONY: promscale
 promscale: helm-repo
-	NS=bench $(MAKE) create-namespace
 	helm install tobs helm/charts/benchmark/ \
 		--wait \
 		--timeout 15m \
 		--namespace bench \
+		--create-namespace \
 		-f helm/values/benchmark-promscale-datasource.yaml
+
+.PHONY: update-remote-write
+update-remote-write:
+	helm update tobs helm/charts/benchmark \
+		--wait \
+		--timeout 15m \
+		--namespace bench \
+		-f helm/values/benchmark-avalanche-only.yaml
 
 .PHONY: clean-all
 clean-all:

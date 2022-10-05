@@ -1,3 +1,37 @@
+avalanche:
+  enabled: true
+  image:
+    repository: quay.io/prometheuscommunity/avalanche
+    tag: main
+    pullPolicy: Always
+  replicaCount: 1
+  extraArgs:
+    - --const-label=avalanche_replica=$(POD_NAME)
+    - --metric-count=100
+    - --label-count=10
+    - --series-count=10
+    - --const-label=cluster=avalanche
+    - --const-label=replica=0
+    - --value-interval=60
+    - --series-interval=315360000
+    - --metric-interval=315360000
+    - --remote-batch-size=2500
+    - --remote-requests-count=1000000
+    - --remote-write-interval=30s
+    - --remote-url=http://{{ .Release.Name }}-promscale.{{ .Release.Namespace }}.svc:9201/write
+  annotations: {}
+  podAnnotations: {}
+  serviceMonitor:
+    enabled: false
+  service:
+    type: "ClusterIP"
+    annotations: {}
+    port: 9001
+    spec: {}
+  serviceAccount:
+    create: true
+  resources: {}
+  readinessProbe: {}
 tobs:
   enabled: true
   namespaceOverride: ""
@@ -162,37 +196,3 @@ tobs:
           memory: 50Mi
   opentelemetry-operator:
     enabled: false
-avalanche:
-  enabled: true
-  image:
-    repository: quay.io/prometheuscommunity/avalanche
-    tag: main
-    pullPolicy: Always
-  replicaCount: 1
-  extraArgs:
-    - --const-label=avalanche_replica=$(POD_NAME)
-    - --metric-count=100
-    - --label-count=10
-    - --series-count=10
-    - --const-label=cluster=avalanche
-    - --const-label=replica=0
-    - --value-interval=60
-    - --series-interval=315360000
-    - --metric-interval=315360000
-    - --remote-batch-size=2500
-    - --remote-requests-count=1000000
-    - --remote-write-interval=30s
-    - --remote-url=http://{{ .Release.Name }}-promscale.{{ .Release.Namespace }}.svc:9201/write
-  annotations: {}
-  podAnnotations: {}
-  serviceMonitor:
-    enabled: false
-  service:
-    type: "ClusterIP"
-    annotations: {}
-    port: 9001
-    spec: {}
-  serviceAccount:
-    create: true
-  resources: {}
-  readinessProbe: {}

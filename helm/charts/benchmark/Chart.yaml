@@ -14,11 +14,11 @@ keywords:
   - opentelemetry
   - benchmark
 version: 0.1.0
-kubeVersion: ">= 1.23.0"
+kubeVersion: ">= 1.22.0"
 dependencies:
   - name: tobs
     condition: tobs.enabled
-    version: 14.13.1
+    version: ">=15.0.0"
     repository: https://charts.timescale.com
   - name: avalanche
     condition: avalanche.enabled
