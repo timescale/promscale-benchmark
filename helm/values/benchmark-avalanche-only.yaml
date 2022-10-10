@@ -145,6 +145,8 @@ tobs:
         requests:
           cpu: 50m
           memory: 250Mi
+      env:
+        GF_AUTH_ANONYMOUS_ENABLED: true
       envValueFrom:
         GRAFANA_PASSWORD:
       sidecar:

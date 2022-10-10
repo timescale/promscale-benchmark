@@ -44,7 +44,7 @@ The helm chart can be used on any Kubernetes cluster.
 Start a local kind cluster and install [cert-manager](https://cert-manager.io/)
 
 ```shell
-make cert-manager
+make cluster
 ```
 
 Verify that you have access to the local cluster
@@ -132,6 +132,15 @@ avalanche you just need to run Helm again to apply it.
 
 ```shell
 helm update tobs helm/charts/benchmark --wait --timeout 15m -n bench -f helm/values/benchmark-avalanche-only.yaml
+```
+
+### Grafana
+
+You can easily log into Grafana and view Dashboards with a simple command.
+Once ran you can log into Grafana locally with [http://localhost:8080](https://localhost:8080).
+
+```shell
+make grafana
 ```
 
 ## Used Tools
