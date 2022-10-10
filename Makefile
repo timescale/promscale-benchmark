@@ -13,8 +13,8 @@ start-kind: delete-kind  ## This is a phony target that is used to create a loca
 	kind create cluster --config $(KIND_CONFIG)
 	kubectl wait --for=condition=Ready pods --all --all-namespaces --timeout=300s
 
-.PHONY: cert-manager
-cert-manager: start-kind
+.PHONY: cluster
+cluster: start-kind
 	kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/$(CERT_MANAGER_VERSION)/cert-manager.yaml
 	# Give enough time for a cluster to register new Pods
 	sleep 7
@@ -50,7 +50,7 @@ promscale: helm-repo
 
 .PHONY: update-remote-write
 update-remote-write:
-	helm update tobs helm/charts/benchmark \
+	helm upgrade tobs helm/charts/benchmark \
 		--wait \
 		--timeout 15m \
 		--namespace bench \
@@ -61,3 +61,7 @@ clean-all:
 	helm delete -n bench tobs
 	sleep 20
 	kubectl delete ns bench
+
+.PHONY: grafana
+grafana:
+	kubectl port-forward -n bench svc/tobs-grafana 8080:80
