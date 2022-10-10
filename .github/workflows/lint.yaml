@@ -1,0 +1,18 @@
+name: "Lint Helm Charts"
+on:
+  - push
+  - pull_request
+env:
+  helm-version: v3.10.0
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.3.1
+      - name: Run chart-testing (lint)
+        run: make lint

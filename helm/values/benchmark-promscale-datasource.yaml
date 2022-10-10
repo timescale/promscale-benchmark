@@ -1,0 +1,206 @@
+avalanche:
+  enabled: true
+  image:
+    repository: quay.io/prometheuscommunity/avalanche
+    tag: main
+    pullPolicy: Always
+  replicaCount: 1
+  extraArgs:
+    - --const-label=avalanche_replica=$(POD_NAME)
+    - --metric-count=100
+    - --label-count=10
+    - --series-count=10
+    - --const-label=cluster=avalanche
+    - --const-label=replica=0
+    - --value-interval=60
+    - --series-interval=315360000
+    - --metric-interval=315360000
+  annotations: {}
+  podAnnotations: {}
+  serviceMonitor:
+    enabled: true
+  service:
+    type: "ClusterIP"
+    annotations: {}
+    port: 9001
+    spec: {}
+  serviceAccount:
+    create: true
+  resources: {}
+  readinessProbe: {}
+tobs:
+  enabled: true
+  namespaceOverride: ""
+  timescaledb-single:
+    enabled: &dbEnabled true
+    env:
+      - name: TSTUNE_PROFILE
+        value: promscale
+    loadBalancer:
+      enabled: false
+    replicaCount: 1
+    backup:
+      enabled: false
+    persistentVolumes:
+      data:
+        size: 150Gi
+      wal:
+        size: 20Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 2Gi
+    prometheus:
+      enabled: true
+    podMonitor:
+      enabled: true
+  promscale:
+    enabled: true
+    extraArgs:
+      - "--metrics.high-availability=false"
+    extraEnv:
+      - name: "TOBS_TELEMETRY_INSTALLED_BY"
+        value: "helm"
+      - name: "TOBS_TELEMETRY_VERSION"
+        value: "{{ .Chart.Version }}"
+      - name: "TOBS_TELEMETRY_TRACING_ENABLED"
+        value: "true"
+      - name: "TOBS_TELEMETRY_TIMESCALEDB_ENABLED"
+        value: *dbEnabled
+    serviceMonitor:
+      enabled: true
+    connectionSecretName: "tobs-promscale-connection"
+    resources:
+      requests:
+        memory: 500Mi
+        cpu: 30m
+  kube-prometheus-stack:
+    enabled: true
+    defaultRules:
+      rules:
+        etcd: false
+        kubeControllerManager: false
+        kubeProxy: false
+        kubeScheduler: false
+    kubeControllerManager:
+      enabled: false
+    kubeProxy:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeEtcd:
+      enabled: false
+    alertmanager:
+      enabled: false
+    prometheusOperator:
+      prometheusConfigReloader:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 200m
+            memory: 50Mi
+      resources:
+        limits:
+          memory: 200Mi
+          cpu: 100m
+        requests:
+          memory: 100Mi
+          cpu: 10m
+    prometheus:
+      prometheusSpec:
+        scrapeInterval: "1m"
+        scrapeTimeout: "10s"
+        evaluationInterval: "1m"
+        retention: 5d
+        remoteRead: []
+        remoteWrite: []
+        replicas: 1
+        resources:
+          requests:
+            memory: 400Mi
+            cpu: 40m
+        storageSpec:
+          disableMountSubPath: true
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: 8Gi
+        additionalScrapeConfigsSecret:
+          enabled: true
+          name: tobs-scrape-config
+          key: additional-scrape-config.yaml
+    grafana:
+      enabled: true
+      resources:
+        limits:
+          cpu: 200m
+          memory: 400Mi
+        requests:
+          cpu: 50m
+          memory: 250Mi
+      GRAFANA_PASSWORD:
+        secretKeyRef:
+          name: custom-secret-scripts
+          key: GRAFANA_PASSWORD
+      sidecar:
+        datasources:
+          enabled: true
+          defaultDatasourceEnabled: false
+        dashboards:
+          multicluster:
+            global:
+              enabled: false
+          enabled: true
+          files:
+            - dashboards/promscale.json
+            - dashboards/postgres-overview.json
+      adminUser: admin
+      adminPassword: ""
+      persistence:
+        type: pvc
+        enabled: true
+        accessModes:
+          - ReadWriteOnce
+      prometheus:
+        datasource:
+          enabled: true
+          url: "http://{{ .Release.Name }}-promscale.{{ .Release.Namespace }}.svc:9201"
+      timescale:
+        datasource:
+          enabled: true
+          user: grafana
+          # leaving password empty will cause helm to generate a random password
+          pass: ""
+          dbName: postgres
+          sslMode: require
+          # By default the url/host is set to the db instance deployed
+          # with this chart
+          host: "{{ .Release.Name }}.{{ .Release.Namespace }}.svc"
+          port: 5432
+    kube-state-metrics:
+      prometheusScrape: false
+      resources:
+        limits:
+          cpu: 100m
+          memory: 200Mi
+        requests:
+          cpu: 10m
+          memory: 30Mi
+    prometheus-node-exporter:
+      service:
+        annotations:
+          prometheus.io/scrape: "false"
+      resources:
+        limits:
+          cpu: 250m
+          memory: 180Mi
+        requests:
+          cpu: 30m
+          memory: 50Mi
+  opentelemetry-operator:
+    enabled: false
