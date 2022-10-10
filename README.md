@@ -3,50 +3,43 @@
 This repository will contain resources that will be used to benchmark
 [Promscale](https://github.com/timescale/promscale) using [Avalanche](https://github.com/prometheus-community/avalanche).
 For now this will focus on utilizing [tobs](https://github.com/timescale/tobs)
-Helm chart to install to a K8s cluster.  At this moment we are only using this
+Helm chart to install to a K8s cluster. At this moment we are only using this
 to test ingestion of Prometheus data into Promscale using the `remote-write`
 endpoint in Promscale.
 
----
+- [Promscale-Benchmark](#promscale-benchmark)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+    - [Cluster provisioning](#cluster-provisioning)
+      - [Local](#local)
+      - [Amazon EKS](#amazon-eks)
+    - [Stack installation](#stack-installation)
+    - [Avalanche Configuration](#avalanche-configuration)
+    - [Updating](#updating)
+  - [Used Tools](#used-tools)
+    - [tobs](#tobs)
+    - [Avalanche](#avalanche)
 
-## Tools
+## Prerequisites
 
-### tobs
+To run this benchmark you will need to have at least the following tools installed.
 
-[tobs](https://github.com/timescale/tobs) is our tool that makes it as simple as
-possible to install a full observability stack into a Kubernetes cluster.  We
-are currently only using a subsection of the tool/Helm chart for benchmarking.
+* [docker](https://www.docker.com/) - For local testing only
+* [kind](https://kind.sigs.k8s.io/) - For local testing only
+* [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+* [helm](https://helm.sh)
+* [make](https://www.gnu.org/software/make/)
 
-For tobs we enable [Timescale](https://github.com/timescale/timescaledb), [Promscale](https://https://github.com/timescale/promscale),
-[Prometheus](https://github.com/prometheus/prometheus), [Grafana](https://github.com/grafana/grafana),
-and [node_exporter](https://github.com/prometheus/node_exporter) only.  This
-way we scrape and store metric data inside Prometheus instead of TimescaleDB.
-
-### Avalanche
-
-[Avalanche](https://github.com/prometheus-community/avalanche) serves as a text
-based metrics endpoint for load testing Prometheus
-
-With Avalanche we are configuring it to use the Promscale `remote-write` [endpoint](https://github.com/timescale/promscale/blob/master/docs/writing_to_promscale.md)
-
-## Installation/Usage
+## Setup
 
 In this repo we have a local Helm chart that can be used to install and manage
 both tobs and Avalanche configurations into a Kubernetes Cluster.
 
-The helm chart can be used on any Kubernetes cluster, but at the time of this
-writing it has only been tested with using [kind](https://kind.sigs.k8s.io/).
+The helm chart can be used on any Kubernetes cluster.
 
-### Local Usage
+### Cluster provisioning
 
-To run this benchmark locally you will need to have at least the following tools
-installed.
-
-* [docker](https://www.docker.com/)
-* [kind](https://kind.sigs.k8s.io/)
-* [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
-* [helm](https://helm.sh)
-* [make](https://www.gnu.org/software/make/)
+#### Local
 
 Start a local kind cluster and install [cert-manager](https://cert-manager.io/)
 
@@ -59,6 +52,12 @@ Verify that you have access to the local cluster
 ```shell
 kubectl get nodes
 ```
+
+#### Amazon EKS
+
+Go to [docs/eks.md](docs/eks.md) for instructions on how to provision and manage an EKS cluster.
+
+### Stack installation
 
 We are using Helm to install both tools.  We do provide a basic `values.yaml`
 file to use, but I would suggest looking over the documentation for both
@@ -73,7 +72,7 @@ Running `make remote-write` will start the installation process and should
 return once successfully installed.
 
 ```shell
-make remote-write 
+make remote-write
 
 helm repo add timescale 'https://charts.timescale.com'
 "timescale" already exists with the same configuration, skipping
@@ -134,3 +133,23 @@ avalanche you just need to run Helm again to apply it.
 ```shell
 helm update tobs helm/charts/benchmark --wait --timeout 15m -n bench -f helm/values/benchmark-avalanche-only.yaml
 ```
+
+## Used Tools
+
+### tobs
+
+[tobs](https://github.com/timescale/tobs) is our tool that makes it as simple as
+possible to install a full observability stack into a Kubernetes cluster.  We
+are currently only using a subsection of the tool/Helm chart for benchmarking.
+
+For tobs we enable [Timescale](https://github.com/timescale/timescaledb), [Promscale](https://https://github.com/timescale/promscale),
+[Prometheus](https://github.com/prometheus/prometheus), [Grafana](https://github.com/grafana/grafana),
+and [node_exporter](https://github.com/prometheus/node_exporter) only.  This
+way we scrape and store metric data inside Prometheus instead of TimescaleDB.
+
+### Avalanche
+
+[Avalanche](https://github.com/prometheus-community/avalanche) serves as a text
+based metrics endpoint for load testing Prometheus
+
+With Avalanche we are configuring it to use the Promscale `remote-write` [endpoint](https://github.com/timescale/promscale/blob/master/docs/writing_to_promscale.md)****
