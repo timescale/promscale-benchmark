@@ -1,1 +1,3 @@
 helm/charts/benchmark/charts
+*.tgz
+*.lock

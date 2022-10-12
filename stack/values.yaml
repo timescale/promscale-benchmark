@@ -1,0 +1,122 @@
+timescaledb-single:
+  enabled: true
+  loadBalancer:
+    enabled: false
+  replicaCount: 1
+  backup:
+    enabled: false
+  persistentVolumes:
+    data:
+      size: 150Gi
+    wal:
+      size: 20Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 2Gi
+  affinityTemplate: |
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - connector
+          topologyKey: "kubernetes.io/hostname"
+
+promscale:
+  enabled: true
+  # If you want to use a different image, you can do so here.
+  image:
+    repository: timescale/promscale
+  #   tag: 0.14.0
+    pullPolicy: IfNotPresent
+  extraArgs:
+    - "--metrics.high-availability=false"
+  connectionSecretName: "tobs-promscale-connection"
+  resources:
+    requests:
+      memory: 500Mi
+      cpu: 30m
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - timescaledb
+          topologyKey: "kubernetes.io/hostname"
+
+kube-prometheus-stack:
+  enabled: true
+  defaultRules:
+    rules:
+      etcd: false
+      kubeControllerManager: false
+      kubeProxy: false
+      kubeScheduler: false
+  kubeControllerManager:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  alertmanager:
+    enabled: false
+  # This prometheus is monitoring the cluster. Do not use it for load generation.
+  prometheus:
+    prometheusSpec:
+      remoteRead: []
+      remoteWrite: []
+      replicas: 1
+      additionalScrapeConfigsSecret:
+        enabled: false
+      ruleNamespaceSelector: {}
+      serviceMonitorNamespaceSelector: {}
+      podMonitorNamespaceSelector: {}
+      probeNamespaceSelector: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - timescaledb
+              topologyKey: "kubernetes.io/hostname"
+          - weight: 50
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - connector
+              topologyKey: "kubernetes.io/hostname"
+  grafana:
+    enabled: true
+    env:
+      GF_AUTH_ANONYMOUS_ENABLED: true
+    envValueFrom:
+      GRAFANA_PASSWORD:
+    prometheus:
+      datasource:
+        enabled: true
+        url: "http://{{ .Release.Name }}-kube-prometheus-stack-prometheus.{{ .Release.Namespace }}.svc:9090"
+    timescale:
+      datasource:
+        enabled: false
+opentelemetry-operator:
+  enabled: false
