@@ -9,16 +9,17 @@ endpoint in Promscale.
 
 - [Promscale-Benchmark](#promscale-benchmark)
   - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
+  - [Stack Setup](#stack-setup)
     - [Cluster provisioning](#cluster-provisioning)
       - [Local](#local)
       - [Amazon EKS](#amazon-eks)
     - [Stack installation](#stack-installation)
-    - [Avalanche Configuration](#avalanche-configuration)
     - [Updating](#updating)
-  - [Used Tools](#used-tools)
-    - [tobs](#tobs)
-    - [Avalanche](#avalanche)
+  - [Benchmark scenarios](#benchmark-scenarios)
+    - [Available scenarios](#available-scenarios)
+    - [Run a scenario](#run-a-scenario)
+    - [Configure scenario](#configure-scenario)
+  - [Grafana](#grafana)
 
 ## Prerequisites
 
@@ -30,7 +31,7 @@ To run this benchmark you will need to have at least the following tools install
 * [helm](https://helm.sh)
 * [make](https://www.gnu.org/software/make/)
 
-## Setup
+## Stack Setup
 
 In this repo we have a local Helm chart that can be used to install and manage
 both tobs and Avalanche configurations into a Kubernetes Cluster.
@@ -59,35 +60,16 @@ Go to [docs/eks.md](docs/eks.md) for instructions on how to provision and manage
 
 ### Stack installation
 
-We are using Helm to install both tools.  We do provide a basic `values.yaml`
-file to use, but I would suggest looking over the documentation for both
-[tobs](https://github.com/timescale/tobs/blob/main/chart/values.yaml) and [Avalanche](https://github.com/timescale/helm-charts/blob/main/charts/avalanche/values.yaml).
-This will help you adjust any settings, specifically with Avalanche used during
-the benchmark testing.
+We are using Helm to install the latest tobs stack with `values.yaml` pre-configured for
+the benchmark environment.
 
-We provide a pretty cohesive [values file](/helm/values/benchmark-avalanche-only.yaml)
-that you can use out of the box.
-
-Running `make remote-write` will start the installation process and should
-return once successfully installed.
+The default installation will install tobs in `bench` namespace and can be executed with:
 
 ```shell
-make remote-write
-
-helm repo add timescale 'https://charts.timescale.com'
-"timescale" already exists with the same configuration, skipping
-helm repo update timescale
-Hang tight while we grab the latest from your chart repositories...
-...Successfully got an update from the "timescale" chart repository
-Update Complete. ⎈Happy Helming!⎈
-
-helm install tobs helm/charts/benchmark/ \
-  --wait \
-  --timeout 15m \
-  --namespace bench \
-  --create-namespace \
-  -f helm/values/benchmark-avalanche-only.yaml
+make stack
 ```
+
+To check if the stack was installed correctly you can run:
 
 ```shell
 kubectl get po -n bench
@@ -104,61 +86,55 @@ tobs-promscale-7798d778f4-bhl4k                        1/1     Running     3 (56
 tobs-timescaledb-0                                     2/2     Running     0             72s
 ```
 
-### Avalanche Configuration
-
-We are setting the following Avalanche flags by default.  Please read over the
-[documentation](https://github.com/timescale/helm-charts/blob/main/charts/avalanche/values.yaml#L14)
-and adjust your tests accordingly.
-
-```shell
-    - --const-label=avalanche_replica=$(POD_NAME)
-    - --metric-count=100
-    - --label-count=10
-    - --series-count=10
-    - --const-label=cluster=avalanche
-    - --const-label=replica=0
-    - --value-interval=60
-    - --series-interval=315360000
-    - --metric-interval=315360000
-    - --remote-batch-size=2500
-    - --remote-requests-count=1000000
-    - --remote-write-interval=30s
-```
-
 ### Updating
 
-If you made changes to the default values and wish to apply an update to
-avalanche you just need to run Helm again to apply it.
+If you want to modify the default stack installation (ex. to change promscale image version) you
+can edit the `stack/values.yaml` file and run:
 
-```shell
-helm update tobs helm/charts/benchmark --wait --timeout 15m -n bench -f helm/values/benchmark-avalanche-only.yaml
+```
+make stack
 ```
 
-### Grafana
+## Benchmark scenarios
 
-You can easily log into Grafana and view Dashboards with a simple command.
-Once ran you can log into Grafana locally with [http://localhost:8080](https://localhost:8080).
+### Available scenarios
+
+To check the available scenarios explore the `scenarios` directory.
+
+### Run a scenario
+
+To quickly execute a benchmark scenario you can run:
+
+```shell
+make scenarios/<TYPE>/<NAME>
+```
+
+Where `<TYPE>` is the type of scenario you want to run and `<NAME>` is the name of the scenario.
+
+For example:
+```
+make scenarios/metrics/ingest-direct
+```
+
+This will run the load-generator from the `ingest-direct` scenario in the `metrics` type.
+
+_Note: Keep in mind that by default all scenarios are deployed in separate namespaces._
+
+Alternatively you can go to the scenario directory and run `make` command.
+
+### Configure scenario
+
+To configure a scenario follow its instructions in the dedicated `README.md` file. You can find
+the file in scenario directory.
+
+## Grafana
+
+You can easily log into Grafana and view Dashboards with a simple command:
 
 ```shell
 make grafana
 ```
 
-## Used Tools
+Once ran you can log into Grafana locally with [http://localhost:8080](https://localhost:8080).
 
-### tobs
-
-[tobs](https://github.com/timescale/tobs) is our tool that makes it as simple as
-possible to install a full observability stack into a Kubernetes cluster.  We
-are currently only using a subsection of the tool/Helm chart for benchmarking.
-
-For tobs we enable [Timescale](https://github.com/timescale/timescaledb), [Promscale](https://https://github.com/timescale/promscale),
-[Prometheus](https://github.com/prometheus/prometheus), [Grafana](https://github.com/grafana/grafana),
-and [node_exporter](https://github.com/prometheus/node_exporter) only.  This
-way we scrape and store metric data inside Prometheus instead of TimescaleDB.
-
-### Avalanche
-
-[Avalanche](https://github.com/prometheus-community/avalanche) serves as a text
-based metrics endpoint for load testing Prometheus
-
-With Avalanche we are configuring it to use the Promscale `remote-write` [endpoint](https://github.com/timescale/promscale/blob/master/docs/writing_to_promscale.md)****
+_Note: By default grafana is configured with anonymous access which doesn't require a password._
