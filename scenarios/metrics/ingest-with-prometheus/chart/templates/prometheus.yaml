@@ -1,0 +1,51 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: {{ .Release.Name }}-prometheus
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/part-of: ingest-with-prometheus
+spec:
+  version: {{ .Values.prometheus.version }}
+  image: "quay.io/prometheus/prometheus:{{ .Values.prometheus.version }}"
+  replicas: 1
+  remoteWrite:
+  {{ .Values.prometheus.remoteWrite | toYaml | nindent 4 }}
+  resources:
+  {{ .Values.prometheus.resources | toYaml | nindent 4 }}
+  retention: 1d
+  serviceMonitorSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}-avalanche
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - timescaledb
+          topologyKey: kubernetes.io/hostname
+        weight: 100
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - connector
+          topologyKey: kubernetes.io/hostname
+        weight: 50
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - prometheus
+          topologyKey: kubernetes.io/hostname
+        weight: 50
+  serviceAccountName: {{ .Release.Name }}-prometheus-sa
