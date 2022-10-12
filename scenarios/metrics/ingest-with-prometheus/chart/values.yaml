@@ -1,0 +1,41 @@
+prometheus:
+  enabled: true
+  version: v2.39.1
+  # Documentation on remote-write configuration options is available at
+  # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.RemoteWriteSpec
+  remoteWrite:
+  - url: http://tobs-promscale.bench.svc:9201/write
+    remoteTimeout: 100s
+    # Documentation on queue configuration options is available at
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#queueconfig
+    queueConfig:
+      capacity: 100000
+      minShards: 20
+      maxShards: 20
+      maxSamplesPerSend: 10000
+      batchSendDeadline: 30s
+      minBackoff: 100ms
+      maxBackoff: 10s
+  resources:
+    requests:
+      cpu: 40m
+      memory: 400Mi
+
+avalanche:
+  enabled: true
+  image:
+    repository: quay.io/prometheuscommunity/avalanche
+    tag: main
+    pullPolicy: Always
+  replicaCount: 1
+  extraArgs:
+    - --series-interval=315360000
+    - --metric-interval=315360000
+    - --metric-count=100
+    - --label-count=10
+    - --series-count=10
+    - --value-interval=60
+  serviceMonitor:
+    enabled: true
+  serviceAccount:
+    create: true
