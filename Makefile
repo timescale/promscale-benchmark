@@ -17,8 +17,12 @@ delete-kind:  ## Delete the local kubernetes kind cluster.
 
 .PHONY: stack
 stack:  ## Deploy the tobs stack.
-	make -C stack deploy
+	$(MAKE) -C stack deploy
+
+.PHONY: list
+list:  ## List available benchmarking scenarios.
+	@ls -d1 scenarios/*/*
 
 .PHONY: scenarios/*/*
 scenarios/*/*:  ## Deploy a benchmarking scenario.
-	make -C $@ deploy
+	$(MAKE) -C $@ deploy
