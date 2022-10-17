@@ -1,0 +1,190 @@
+observability:
+  otelcol:
+    enabled: false
+  jaeger:
+    enabled: false
+
+components:
+  adService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: AD_SERVICE_PORT
+        value: "8080"
+
+  cartService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: ASPNETCORE_URLS
+        value: http://*:8080
+      - name: REDIS_ADDR
+        value: '{{ include "otel-demo.name" . }}-redis:6379'
+      - name: CART_SERVICE_PORT
+        value: "8080"
+
+  checkoutService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: CART_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-cart-service:8080'
+      - name: CURRENCY_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-currency-service:8080'
+      - name: PAYMENT_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-payment-service:8080'
+      - name: PRODUCT_CATALOG_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-product-catalog-service:8080'
+      - name: SHIPPING_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-shipping-service:8080'
+      - name: EMAIL_SERVICE_ADDR
+        value: 'http://{{ include "otel-demo.name" . }}-email-service:8080'
+      - name: CHECKOUT_SERVICE_PORT
+        value: "8080"
+
+  currencyService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: PORT
+        value: "8080"
+      - name: CURRENCY_SERVICE_PORT
+        value: "8080"
+
+  emailService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4318/v1/traces'
+      - name: APP_ENV
+        value: production
+      - name: PORT
+        value: "8080"
+      - name: EMAIL_SERVICE_PORT
+        value: "8080"
+
+  featureflagService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: FEATURE_FLAG_GRPC_SERVICE_PORT
+        value: "50053"
+      - name: FEATURE_FLAG_SERVICE_PORT
+        value: "8081"
+      - name: OTEL_EXPORTER_OTLP_TRACES_PROTOCOL
+        value: grpc
+      - name: DATABASE_URL
+        value: 'ecto://ffs:ffs@{{ include "otel-demo.name" . }}-ffs-postgres:5432/ffs'
+
+  ffsPostgres:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: POSTGRES_DB
+        value: ffs
+      - name: POSTGRES_PASSWORD
+        value: ffs
+      - name: POSTGRES_USER
+        value: ffs
+
+  frontend:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: FRONTEND_ADDR
+        value: :8080
+      - name: AD_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-ad-service:8080'
+      - name: CART_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-cart-service:8080'
+      - name: CHECKOUT_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-checkout-service:8080'
+      - name: CURRENCY_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-currency-service:8080'
+      - name: PRODUCT_CATALOG_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-product-catalog-service:8080'
+      - name: RECOMMENDATION_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-recommendation-service:8080'
+      - name: SHIPPING_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-shipping-service:8080'
+      - name: FRONTEND_PORT
+        value: "8080"
+
+  paymentService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: PAYMENT_SERVICE_PORT
+        value: "8080"
+
+  productCatalogService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: PRODUCT_CATALOG_SERVICE_PORT
+        value: "8080"
+      - name: FEATURE_FLAG_GRPC_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-featureflag-service:50053'
+
+  recommendationService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: OTEL_PYTHON_LOG_CORRELATION
+        value: "true"
+      - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
+        value: python
+      - name: RECOMMENDATION_SERVICE_PORT
+        value: "8080"
+      - name: PRODUCT_CATALOG_SERVICE_ADDR
+        value: '{{ include "otel-demo.name" . }}-product-catalog-service:8080'
+
+  shippingService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: PORT
+        value: "8080"
+      - name: SHIPPING_SERVICE_PORT
+        value: "8080"
+      - name: QUOTE_SERVICE_ADDR
+        value: 'http://{{ include "otel-demo.name" . }}-quote-service:8080'
+
+  quoteService:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: OTEL_TRACES_SAMPLER
+        value: "parentbased_always_on"
+      - name: OTEL_TRACES_EXPORTER
+        value: "otlp"
+      - name: OTEL_EXPORTER_OTLP_TRACES_PROTOCOL
+        value: "grpc"
+      - name: OTEL_PHP_TRACES_PROCESSOR
+        value: "simple"
+      - name: QUOTE_SERVICE_PORT
+        value: "8080"
+
+  loadgenerator:
+    env:
+      - name: FRONTEND_ADDR
+        value: '{{ include "otel-demo.name" . }}-frontend:8080'
+      - name: LOCUST_WEB_PORT
+        value: "8089"
+      - name: LOCUST_USERS
+        value: "10"
+      - name: LOCUST_HOST
+        value: "http://$(FRONTEND_ADDR)"
+      - name: LOCUST_HEADLESS
+        value: "false"
+      - name: LOCUST_AUTOSTART
+        value: "true"
+      - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
+        value: python
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: 'http://tobs-opentelemetry-collector.bench.svc:4317'
+      - name: LOADGENERATOR_PORT
+        value: "8089"
