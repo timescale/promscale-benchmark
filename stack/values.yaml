@@ -119,4 +119,4 @@ kube-prometheus-stack:
       datasource:
         enabled: false
 opentelemetry-operator:
-  enabled: false
+  enabled: true

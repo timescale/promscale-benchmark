@@ -74,16 +74,17 @@ To check if the stack was installed correctly you can run:
 ```shell
 kubectl get po -n bench
 
-NAME                                                   READY   STATUS      RESTARTS      AGE
-prometheus-tobs-kube-prometheus-stack-prometheus-0     2/2     Running     0             68s
-tobs-avalanche-54d4b5b8df-s4nj9                        1/1     Running     0             72s
-tobs-connection-secret-7zxns                           0/1     Completed   0             72s
-tobs-grafana-74dd454d46-npqzg                          3/3     Running     0             72s
-tobs-kube-prometheus-stack-operator-755b69fbbb-zkj6t   1/1     Running     0             72s
-tobs-kube-state-metrics-6c79f8fbdb-9s6hv               1/1     Running     0             72s
-tobs-prometheus-node-exporter-k7hws                    1/1     Running     0             72s
-tobs-promscale-7798d778f4-bhl4k                        1/1     Running     3 (56s ago)   72s
-tobs-timescaledb-0                                     2/2     Running     0             72s
+NAME                                                         READY   STATUS      RESTARTS        AGE
+opentelemetry-operator-controller-manager-7b69d9856f-8nhcm   2/2     Running     0               3m40s
+prometheus-tobs-kube-prometheus-stack-prometheus-0           2/2     Running     0               3m26s
+tobs-connection-secret-9m45w                                 0/1     Completed   0               3m40s
+tobs-grafana-6c545d5fc8-7hr9k                                3/3     Running     0               3m40s
+tobs-kube-prometheus-stack-operator-75985bb949-x2bxv         1/1     Running     0               3m40s
+tobs-kube-state-metrics-5cfc875576-9pp5b                     1/1     Running     0               3m40s
+tobs-opentelemetry-collector-6869598c59-tbncl                1/1     Running     0               107s
+tobs-prometheus-node-exporter-hc6s6                          1/1     Running     0               3m40s
+tobs-promscale-57855f5c46-zn562                              1/1     Running     4 (2m54s ago)   3m40s
+tobs-timescaledb-0                                           2/2     Running     0               3m40s
 ```
 
 ### Updating
