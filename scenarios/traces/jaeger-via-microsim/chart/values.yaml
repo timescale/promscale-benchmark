@@ -1,0 +1,32 @@
+microsimReplicas: 1
+microsimWorkers: 3
+microsimTestDuration: "10m"
+microsimSleepDuration: "100ms"
+microsimCollector: "http://microsim-jaeger-collector.microsim.svc:14268/api/traces"
+# To use the OTEL collector you can use `make otel` or set the
+# microsimCollector to:
+# microsimCollector: "http://microsim-opentelemetry-collector.microsim.svc:14268/api/traces"
+
+jaeger:
+  tag: "1.38.1"
+  provisionDataStore:
+    cassandra: false
+  storage:
+    type: grpc-plugin
+    grpcPlugin:
+      extraEnv:
+        - name: GRPC_STORAGE_SERVER
+          value: "tobs-promscale.bench.svc:9202"
+  agent:
+    enabled: false
+  collector:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: tobs
+  agentSidecar:
+    enabled: false
+  query:
+    agentSidecar:
+      enabled: false

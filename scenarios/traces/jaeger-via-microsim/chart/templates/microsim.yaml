@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-microsim
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: microsim
+spec:
+  replicas: {{ .Values.microsimReplicas }}
+  selector:
+    matchLabels:
+      app: microsim
+  template:
+    metadata:
+      labels:
+        app: microsim
+    spec:
+      containers:
+      - name: microsim
+        image: yurishkuro/microsim
+        args:
+          - "-j"
+          - "{{ .Values.microsimCollector }}"
+          - "-w"
+          - "{{ .Values.microsimWorkers }}"
+          - "-d"
+          - "{{ .Values.microsimTestDuration }}"
+          - "-s"
+          - "{{ .Values.microsimSleepDuration }}"
