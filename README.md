@@ -45,7 +45,7 @@ The helm chart can be used on any Kubernetes cluster.
 Start a local kind cluster and install [cert-manager](https://cert-manager.io/)
 
 ```shell
-make cluster
+make start-kind
 ```
 
 Verify that you have access to the local cluster
