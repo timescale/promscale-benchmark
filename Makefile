@@ -19,6 +19,10 @@ delete-kind:  ## Delete the local kubernetes kind cluster.
 stack:  ## Deploy the tobs stack.
 	$(MAKE) -C stack deploy
 
+.PHONY: jaeger
+jaeger: ## Deploy jaeger all-in-one
+	$(MAKE) -C addons/jaeger deploy
+
 .PHONY: list
 list:  ## List available benchmarking scenarios.
 	@ls -d1 scenarios/*/*
