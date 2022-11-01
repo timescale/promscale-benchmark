@@ -1,0 +1,60 @@
+---
+tracegen:
+  enabled: true
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+
+elasticsearch:
+  enabled: true
+  esJavaOpts: "-Xms25g -Xmx25g"
+  secret:
+    enabled: true
+    password: test1234
+  resources:
+    requests:
+      memory: 25Gi
+      cpu: 10
+    limits:
+      memory: 30Gi
+      cpu: 15
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 1100Gi
+
+jaeger:
+  enabled: true
+  provisionDataStore:
+    cassandra: false
+    elasticsearch: false
+    kafka: false
+  query:
+    enabled: true
+    service:
+      port: 16686
+    resources:
+      requests:
+        cpu: 4000m
+        memory: 2Gi
+  collector:
+    enabled: true
+    replicaCount: 4
+    cmdlineParams:
+      collector.num-workers: 1000
+      collector.queue-size: 100000
+    resources:
+      requests:
+        cpu: 4000m
+        memory: 2Gi
+  storage:
+    type: elasticsearch
+    elasticsearch:
+      scheme: http
+      host: elasticsearch-master
+      port: 9200
+      user: elastic
+      password: test1234

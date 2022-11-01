@@ -1,5 +1,5 @@
 NS=bench
-CERT_MANAGER_VERSION ?= v1.9.1
+CERT_MANAGER_VERSION ?= v1.10.0
 
 cert-manager:
 	kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/$(CERT_MANAGER_VERSION)/cert-manager.yaml
