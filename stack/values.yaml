@@ -1,7 +1,5 @@
 timescaledb-single:
   enabled: true
-  loadBalancer:
-    enabled: false
   replicaCount: 1
   backup:
     enabled: false
