@@ -53,13 +53,13 @@ can use `aws configure` to set them up.
 6. Associate OIDC provider with cluster:
 
     ```shell
-    eksctl utils associate-iam-oidc-provider --region "$REGION" --cluster "$NAME"
+    eksctl utils associate-iam-oidc-provider --region "$REGION" --cluster "$NAME" --approve
     ```
 
 7. Create AWS IAM service account used to create volumes (PVC) on the cluster:
 
     ```shell
-    eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster "$NAME" --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy --approve --role-only --role-name "$ROLE"
+    eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster "$NAME" --region "$REGION" --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy --approve --role-only --role-name "$ROLE"
     ```
 
 8. Create a nodegroup:
@@ -71,7 +71,7 @@ can use `aws configure` to set them up.
 9. Install the CSI Volume driver needed to create PVC's:
 
     ```shell
-    eksctl create addon --name aws-ebs-csi-driver --cluster "$NAME" --service-account-role-arn "arn:aws:iam ::<aws account number>:role/$ROLE" --force
+    eksctl create addon --name aws-ebs-csi-driver --cluster "$NAME" --region "$REGION" --service-account-role-arn "arn:aws:iam ::<aws account number>:role/$ROLE" --force
     ```
 
 _Note: You can obtain current list of node types with `aws ec2 describe-instance-types --region "$REGION" | jq '.InstanceTypes[].InstanceType'` or [here](https://aws.amazon.com/ec2/instance-types/)._
@@ -84,10 +84,10 @@ export REGION=us-east-1
 eksctl create cluster --name "$NAME" --region "$REGION" --without-nodegroup
 eksctl get cluster --name "$NAME" --region "$REGION"
 kubectl cluster-info
-eksctl utils associate-iam-oidc-provider --region "$REGION" --cluster "$NAME"
-eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster "$NAME" --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy --approve --role-only --role-name "$ROLE"
+eksctl utils associate-iam-oidc-provider --region "$REGION" --cluster "$NAME" --approve
+eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster "$NAME" --region "$REGION" --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy --approve --role-only --role-name "$ROLE"
 eksctl create nodegroup --cluster "$NAME" --region "$REGION" --node-type m5.xlarge --nodes 3 --nodes-min 1 --nodes-max 3 --managed
-eksctl create addon --name aws-ebs-csi-driver --cluster "$NAME" --service-account-role-arn "arn:aws:iam ::<aws account number>:role/$ROLE" --force
+eksctl create addon --name aws-ebs-csi-driver --cluster "$NAME" --region "$REGION" --service-account-role-arn "arn:aws:iam ::<aws account number>:role/$ROLE" --force
 ```
 
 ## Adding/Changing nodes
