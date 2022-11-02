@@ -5,6 +5,7 @@ metadata:
   name: {{ .Release.Name }}-prometheus
   namespace: {{ .Release.Namespace }}
   labels:
+    app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: ingest-with-prometheus
 spec:
   version: {{ .Values.prometheus.version }}
@@ -17,7 +18,11 @@ spec:
   retention: 1d
   serviceMonitorSelector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Release.Name }}-avalanche
+      app.kubernetes.io/part-of: ingest-with-prometheus
+      tobs/excluded: "true"
+  podMetadata:
+    labels:
+      app.kubernetes.io/part-of: ingest-with-prometheus
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
