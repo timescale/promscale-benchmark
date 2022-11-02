@@ -81,6 +81,7 @@ kube-prometheus-stack:
   # This prometheus is monitoring the cluster. Do not use it for load generation.
   prometheus:
     prometheusSpec:
+      remoteWriteDashboards: true
       remoteRead: []
       remoteWrite: []
       replicas: 1
