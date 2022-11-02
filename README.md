@@ -87,6 +87,15 @@ tobs-promscale-57855f5c46-zn562                              1/1     Running    
 tobs-timescaledb-0                                           2/2     Running     0               3m40s
 ```
 
+By default Promscale is setup to send traces to Jaeger, if you wish to view those
+traces you can run:
+
+```shell
+make jaeger
+```
+
+To open the Jaeger UI run `make jaeger-ui` and open a browser to [http://localhost:16686](http://localhost:16686)
+
 ### Updating
 
 If you want to modify the default stack installation (ex. to change promscale image version) you

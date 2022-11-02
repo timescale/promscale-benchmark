@@ -21,7 +21,11 @@ stack:  ## Deploy the tobs stack.
 
 .PHONY: jaeger
 jaeger: ## Deploy jaeger all-in-one
-	$(MAKE) -C addons/jaeger deploy
+	$(MAKE) -C stack/addons/jaeger deploy
+
+.PHONY: jaeger-ui
+jaeger-ui:
+	kubectl port-forward -n tracing svc/jaeger-query 16686 
 
 .PHONY: list
 list:  ## List available benchmarking scenarios.
