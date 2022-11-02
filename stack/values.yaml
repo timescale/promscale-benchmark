@@ -39,6 +39,14 @@ promscale:
     requests:
       memory: 500Mi
       cpu: 30m
+  config:
+    startup.dataset.config: |
+      metrics:
+        default_chunk_interval: 1h
+        compress_data: true
+        default_retention_period: 90d
+      traces:
+        default_retention_period: 30d
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
