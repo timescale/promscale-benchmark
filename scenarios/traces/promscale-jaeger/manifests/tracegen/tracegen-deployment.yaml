@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synthetic-load-gen
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: synthetic-load-gen
+  template:
+    metadata:
+      labels:
+        app: synthetic-load-gen
+    spec:
+      containers:
+        - name: synthetic-load-gen
+          image: omnition/synthetic-load-generator:1.0.25
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          volumeMounts:
+            - name: topology-volume
+              mountPath: /etc/synthetic-load-generator
+          env:
+            - name: TOPOLOGY_FILE
+              value: /etc/synthetic-load-generator/topology.json
+            - name: JAEGER_COLLECTOR_URL
+              value: http://jaeger-promscale-collector:14268
+      volumes:
+        - name: topology-volume
+          configMap:
+            name: topology
+            items:
+              - key: topology
+                path: topology.json

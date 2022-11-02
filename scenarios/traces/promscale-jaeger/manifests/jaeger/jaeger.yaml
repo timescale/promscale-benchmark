@@ -1,0 +1,429 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: service-account
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale
+---
+apiVersion: v1
+data:
+  ui: '{"dependencies":{"menuEnabled":false}}'
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: ui-configuration
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-ui-configuration
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-ui-configuration
+---
+apiVersion: v1
+data:
+  sampling: '{"default_strategy":{"param":1,"type":"probabilistic"}}'
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: sampling-configuration
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-sampling-configuration
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-sampling-configuration
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: query-ingress
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-query
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-query
+spec:
+  defaultBackend:
+    service:
+      name: jaeger-promscale-query
+      port:
+        number: 16686
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "false"
+    service.beta.openshift.io/serving-cert-secret-name: jaeger-promscale-collector-headless-tls
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: service-collector
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-collector
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-collector-headless
+spec:
+  clusterIP: None
+  ports:
+  - name: http-zipkin
+    port: 9411
+    targetPort: 0
+  - name: grpc-http
+    port: 14250
+    targetPort: 0
+  - name: http-c-tchan-trft
+    port: 14267
+    targetPort: 0
+  - name: http-c-binary-trft
+    port: 14268
+    targetPort: 0
+  - name: grpc-otlp
+    port: 4317
+    targetPort: 0
+  - name: http-otlp
+    port: 4318
+    targetPort: 0
+  selector:
+    app: jaeger
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-collector
+    app.kubernetes.io/part-of: jaeger
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: service-collector
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-collector
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-collector
+spec:
+  ports:
+  - name: http-zipkin
+    port: 9411
+    targetPort: 0
+  - name: grpc-http
+    port: 14250
+    targetPort: 0
+  - name: http-c-tchan-trft
+    port: 14267
+    targetPort: 0
+  - name: http-c-binary-trft
+    port: 14268
+    targetPort: 0
+  - name: grpc-otlp
+    port: 4317
+    targetPort: 0
+  - name: http-otlp
+    port: 4318
+    targetPort: 0
+  selector:
+    app: jaeger
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-collector
+    app.kubernetes.io/part-of: jaeger
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: service-query
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-query
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-query
+spec:
+  ports:
+  - name: http-query
+    port: 16686
+    targetPort: 16686
+  - name: grpc-query
+    port: 16685
+    targetPort: 16685
+  selector:
+    app: jaeger
+    app.kubernetes.io/component: query
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-query
+    app.kubernetes.io/part-of: jaeger
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    linkerd.io/inject: disabled
+    prometheus.io/port: "14269"
+    prometheus.io/scrape: "true"
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-collector
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-collector
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: jaeger
+      app.kubernetes.io/component: collector
+      app.kubernetes.io/instance: jaeger-promscale
+      app.kubernetes.io/managed-by: jaeger-operator
+      app.kubernetes.io/name: jaeger-promscale-collector
+      app.kubernetes.io/part-of: jaeger
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: disabled
+        prometheus.io/port: "14269"
+        prometheus.io/scrape: "true"
+        sidecar.istio.io/inject: "false"
+      creationTimestamp: null
+      labels:
+        app: jaeger
+        app.kubernetes.io/component: collector
+        app.kubernetes.io/instance: jaeger-promscale
+        app.kubernetes.io/managed-by: jaeger-operator
+        app.kubernetes.io/name: jaeger-promscale-collector
+        app.kubernetes.io/part-of: jaeger
+    spec:
+      containers:
+      - args:
+        - --collector.num-workers=1000
+        - --collector.queue-size=100000
+        - --grpc-storage-plugin.configuration-file=/plugin-config/config.yaml
+        - --grpc-storage-plugin.log-level=debug
+        - --sampling.strategies-file=/etc/jaeger/sampling/sampling.json
+        env:
+        - name: SPAN_STORAGE_TYPE
+          value: grpc-plugin
+        - name: COLLECTOR_ZIPKIN_HOST_PORT
+          value: :9411
+        - name: COLLECTOR_OTLP_ENABLED
+          value: "true"
+        - name: GRPC_STORAGE_SERVER
+          value: tobs-promscale.bench.svc:9202
+        image: jaegertracing/jaeger-collector:1.38.1
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: 14269
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        name: jaeger-collector
+        ports:
+        - containerPort: 9411
+          name: zipkin
+        - containerPort: 14267
+          name: c-tchan-trft
+        - containerPort: 14268
+          name: c-binary-trft
+        - containerPort: 14269
+          name: admin-http
+        - containerPort: 14250
+          name: grpc
+        - containerPort: 4317
+          name: grpc-otlp
+        - containerPort: 4318
+          name: http-otlp
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 14269
+          initialDelaySeconds: 1
+        resources:
+          requests:
+            cpu: "4"
+            memory: 2Gi
+        volumeMounts:
+        - mountPath: /plugin-config
+          name: plugin-config
+        - mountPath: /etc/jaeger/sampling
+          name: jaeger-promscale-sampling-configuration-volume
+          readOnly: true
+        - mountPath: /plugin
+          name: plugin-volume
+      enableServiceLinks: false
+      initContainers:
+      - image: busybox
+        name: install-plugin
+        resources: {}
+        volumeMounts:
+        - mountPath: /plugin-config
+          name: plugin-config
+        - mountPath: /etc/jaeger/sampling
+          name: jaeger-promscale-sampling-configuration-volume
+          readOnly: true
+        - mountPath: /plugin
+          name: plugin-volume
+      serviceAccountName: jaeger-promscale
+      volumes:
+      - emptyDir: {}
+        name: plugin-config
+      - configMap:
+          items:
+          - key: sampling
+            path: sampling.json
+          name: jaeger-promscale-sampling-configuration
+        name: jaeger-promscale-sampling-configuration-volume
+      - emptyDir: {}
+        name: plugin-volume
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    linkerd.io/inject: disabled
+    prometheus.io/port: "16687"
+    prometheus.io/scrape: "true"
+    sidecar.jaegertracing.io/inject: jaeger-promscale
+  creationTimestamp: null
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: query
+    app.kubernetes.io/instance: jaeger-promscale
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-promscale-query
+    app.kubernetes.io/part-of: jaeger
+  name: jaeger-promscale-query
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+      app.kubernetes.io/component: query
+      app.kubernetes.io/instance: jaeger-promscale
+      app.kubernetes.io/managed-by: jaeger-operator
+      app.kubernetes.io/name: jaeger-promscale-query
+      app.kubernetes.io/part-of: jaeger
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: disabled
+        prometheus.io/port: "16687"
+        prometheus.io/scrape: "true"
+        sidecar.istio.io/inject: "false"
+        sidecar.jaegertracing.io/inject: jaeger-promscale
+      creationTimestamp: null
+      labels:
+        app: jaeger
+        app.kubernetes.io/component: query
+        app.kubernetes.io/instance: jaeger-promscale
+        app.kubernetes.io/managed-by: jaeger-operator
+        app.kubernetes.io/name: jaeger-promscale-query
+        app.kubernetes.io/part-of: jaeger
+    spec:
+      containers:
+      - args:
+        - --grpc-storage-plugin.configuration-file=/plugin-config/config.yaml
+        - --grpc-storage-plugin.log-level=debug
+        - --query.ui-config=/etc/config/ui.json
+        env:
+        - name: SPAN_STORAGE_TYPE
+          value: grpc-plugin
+        - name: METRICS_STORAGE_TYPE
+        - name: JAEGER_DISABLED
+          value: "false"
+        - name: GRPC_STORAGE_SERVER
+          value: tobs-promscale.bench.svc:9202
+        image: jaegertracing/jaeger-query:1.38.1
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: 16687
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        name: jaeger-query
+        ports:
+        - containerPort: 16686
+          name: query
+        - containerPort: 16687
+          name: admin-http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 16687
+          initialDelaySeconds: 1
+        resources:
+          requests:
+            cpu: "4"
+            memory: 2Gi
+        volumeMounts:
+        - mountPath: /plugin-config
+          name: plugin-config
+        - mountPath: /etc/config
+          name: jaeger-promscale-ui-configuration-volume
+          readOnly: true
+        - mountPath: /plugin
+          name: plugin-volume
+      enableServiceLinks: false
+      initContainers:
+      - image: busybox
+        name: install-plugin
+        resources: {}
+        volumeMounts:
+        - mountPath: /plugin-config
+          name: plugin-config
+        - mountPath: /etc/config
+          name: jaeger-promscale-ui-configuration-volume
+          readOnly: true
+        - mountPath: /plugin
+          name: plugin-volume
+      serviceAccountName: jaeger-promscale
+      volumes:
+      - emptyDir: {}
+        name: plugin-config
+      - configMap:
+          items:
+          - key: ui
+            path: ui.json
+          name: jaeger-promscale-ui-configuration
+        name: jaeger-promscale-ui-configuration-volume
+      - emptyDir: {}
+        name: plugin-volume
+status: {}
