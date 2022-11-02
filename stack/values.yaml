@@ -107,6 +107,7 @@ kube-prometheus-stack:
     enabled: true
     env:
       GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Editor"
     envValueFrom:
       GRAFANA_PASSWORD:
     prometheus:
