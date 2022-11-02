@@ -3,6 +3,8 @@ image:
   tag: main
   pullPolicy: Always
 replicaCount: 1
+labels:
+  tobs/excluded: "true"
 extraArgs:
   - --const-label=avalanche_replica=$(POD_NAME)
   - --metric-count=100

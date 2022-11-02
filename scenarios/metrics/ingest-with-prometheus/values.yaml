@@ -39,6 +39,9 @@ avalanche:
     - --series-count=120
     - --label-count=10
     - --value-interval=10
+  labels:
+    tobs/excluded: "true"
+    app.kubernetes.io/part-of: ingest-with-prometheus
   serviceMonitor:
     enabled: true
   serviceAccount:
