@@ -39,3 +39,7 @@ avalanche:
     - --series-count=120
     - --label-count=10
     - --value-interval=10
+  serviceMonitor:
+    enabled: true
+  serviceAccount:
+    create: true
