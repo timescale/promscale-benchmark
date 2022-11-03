@@ -34,6 +34,9 @@ promscale:
     pullPolicy: IfNotPresent
   extraArgs:
     - "--metrics.high-availability=false"
+  extraEnv:
+    - name: PROMSCALE_TELEMETRY_TRACE_JAEGER_ENDPOINT
+      value: http://jaeger-collector.tracing.svc.cluster.local:14268/api/traces
   connectionSecretName: "tobs-promscale-connection"
   resources:
     requests:

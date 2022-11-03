@@ -1,0 +1,14 @@
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+  kafka: false
+allInOne:
+  enabled: true
+  ingress:
+    enabled: false
+agent:
+  enabled: false
+collector:
+  enabled: false
+query:
+  enabled: false
