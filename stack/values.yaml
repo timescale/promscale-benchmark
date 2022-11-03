@@ -42,6 +42,11 @@ promscale:
     requests:
       memory: 500Mi
       cpu: 30m
+  config:
+    # Use 1hr chunk interval for benchmarking. For details https://github.com/timescale/promscale/issues/1736
+    startup.dataset.config: |
+      metrics:
+        default_chunk_interval: 1h
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
