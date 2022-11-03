@@ -6,6 +6,12 @@ cert-manager:
 	# Wait for pods to be up and running
 	kubectl wait --timeout=120s --for=condition=ready pod -l app.kubernetes.io/instance=cert-manager -n cert-manager
 
+storageclass:
+	$(MAKE) -C addons/gp3 install
+
+jaeger:
+	$(MAKE) -C addons/jaeger install
+
 .PHONY: helm-repo
 helm-repo:
 	-helm repo add timescale 'https://charts.timescale.com'

@@ -1,6 +1,6 @@
 # Amazon EKS Cluster provisioning and maintenance
 
-The guide is based on official [AWS EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) 
+The guide is based on official [AWS EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
 and assumes usage of `eksctl` tool. For other methods of provisioning
 EKS cluster, please refer to the official documentation.
 
@@ -9,6 +9,7 @@ EKS cluster, please refer to the official documentation.
   - [Cluster provisioning](#cluster-provisioning)
     - [AIO (All-in-one) privisioning](#aio-all-in-one-privisioning)
   - [Adding/Changing nodes](#addingchanging-nodes)
+  - [Storage provisioning](#storage-provisioning)
   - [Cluster deletion](#cluster-deletion)
 
 ## Prerequisites
@@ -116,6 +117,10 @@ can do so by running the following:
     ```shell
     kubectl get nodes
     ```
+
+## Storage provisioning
+
+To use gp3 storage class follow a guide from [here](../stack/addons/gp3/README.md). For your comfort, make sure storageClass is created before starting the tobs stack.
 
 ## Cluster deletion
 
