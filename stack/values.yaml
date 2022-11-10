@@ -79,6 +79,8 @@ kube-prometheus-stack:
   alertmanager:
     enabled: false
   prometheusOperator:
+    tls:
+      enabled: false
     admissionWebhooks:
       enabled: false
   # This prometheus is monitoring the cluster. Do not use it for load generation.
