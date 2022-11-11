@@ -28,9 +28,9 @@ can use `aws configure` to set them up.
 2. Define the cluster name, region and IAM role name in the environment variables:
 
     ```shell
-    export NAME="promscale-${USER}-$(date +%s)"
-    export REGION=us-east-1
-    export ROLE=${USER}-amazoneks_ebs_csi_driverrole
+    export NAME="${USER}-promscale-$(date +%F-%H-%M)"
+    export REGION="us-east-1"
+    export ROLE="${NAME}-eks-ebs-csi"
     export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
     ```
 
@@ -81,9 +81,9 @@ _Note: You can obtain current list of node types with `aws ec2 describe-instance
 ### AIO (All-in-one) privisioning
 
 ```shell
-export NAME="promscale-${USER}-$(date +%s)"
-export REGION=us-east-1
-export ROLE=${USER}-amazoneks_ebs_csi_driverrole
+export NAME="${USER}-promscale-$(date +%F-%H-%M)"
+export REGION="us-east-1"
+export ROLE="${NAME}-eks-ebs-csi"
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 eksctl create cluster --name "$NAME" --region "$REGION" --without-nodegroup
 eksctl get cluster --name "$NAME" --region "$REGION"
