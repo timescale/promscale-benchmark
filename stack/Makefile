@@ -6,9 +6,12 @@ cert-manager:
 	# Wait for pods to be up and running
 	kubectl wait --timeout=120s --for=condition=ready pod -l app.kubernetes.io/instance=cert-manager -n cert-manager
 
+addons/gp3:
+gp3:
 storageclass:
 	$(MAKE) -C addons/gp3 install
 
+addons/jaeger:
 jaeger:
 	$(MAKE) -C addons/jaeger install
 

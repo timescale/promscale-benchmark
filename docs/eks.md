@@ -11,6 +11,7 @@ EKS cluster, please refer to the official documentation.
   - [Adding/Changing nodes](#addingchanging-nodes)
   - [Storage provisioning](#storage-provisioning)
   - [Cluster deletion](#cluster-deletion)
+    - [Delete SVC objects](#delete-svc-objects)
 
 ## Prerequisites
 
@@ -129,4 +130,14 @@ following command:
 
 ```shell
 eksctl delete cluster --name "$NAME" --region "$REGION"
+```
+
+_If you have Service objects of LoadBalancer type, you will need to delete them before deleting the cluster._
+
+### Delete SVC objects
+
+To prevent stale VPC resources, you will need to delete the Service objects. This should be done for you with stack uninstallation via `make uninstall`. However if you have not done this, you can do so with the following to remove all Service objects:
+
+```shell
+kubectl delete svc -A --all
 ```
