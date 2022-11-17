@@ -29,7 +29,8 @@ install: cert-manager helm-repo
 		--timeout 15m \
 		--namespace "$(NS)" \
 		--create-namespace \
-		-f values.yaml
+		-f values.yaml \
+		-f values-overrides.yaml
 
 .PHONY: uninstall
 uninstall:
