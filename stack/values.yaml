@@ -1,3 +1,7 @@
+# NOTE: To apply configuration, use `values-override.yaml` instead of this file.
+# By doing so you can easily apply your customization changes even after
+# `main` branch is updated. This in turn allows for easier `git rebase` operation.
+
 timescaledb-single:
   enabled: true
   replicaCount: 1
