@@ -1,0 +1,10 @@
+# Apply your stack customization here. This file is not tracked by git.
+
+# If you want to make persistent changes to this file you can do so by using
+# `git update-index --no-assume-unchanged values-overrides.yaml` command,
+# commiting changes, and then disabling file tracking by running
+# `git update-index --assume-unchanged values-overrides.yaml` command.
+
+prometheus: {}
+
+avalanche: {}

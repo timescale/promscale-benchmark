@@ -1,4 +1,4 @@
 helm/charts/benchmark/charts
 *.tgz
 *.lock
-stack/values-overrides.yaml
+values-overrides.yaml

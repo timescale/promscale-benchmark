@@ -21,7 +21,8 @@ install: helm-repo helm-deps
 		--timeout 15m \
 		--namespace "$(NS)" \
 		--create-namespace \
-		-f values.yaml
+		-f values.yaml \
+		-f values-overrides.yaml
 
 .PHONY: uninstall
 uninstall:
