@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-node-exporter
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: node-exporter
+    app.kubernetes.io/part-of: query-promql
+    tobs/excluded: "true"
+spec:
+  jobLabel: jobLabel
+  endpoints:
+  - interval: 30s
+    scheme: http
+    port: http-metrics
+  namespaceSelector:
+    matchNames:
+    - bench
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: tobs
+      app.kubernetes.io/name: prometheus-node-exporter

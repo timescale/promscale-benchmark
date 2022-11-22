@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-prometheus
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: query-promql
+spec:
+  ports:
+  - name: web
+    port: 9090
+    targetPort: web
+  - name: reloader-web
+    port: 8080
+    targetPort: reloader-web
+  selector:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: query-promql
+  sessionAffinity: ClientIP
