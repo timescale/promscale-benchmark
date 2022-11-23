@@ -24,7 +24,9 @@ avalanche:
     repository: quay.io/prometheuscommunity/avalanche
     tag: main
     pullPolicy: Always
-  replicaCount: 1
+  # Use the following config to tweak the number of avalanche targets
+  # to scrape instead of increasing replicaCount.
+  fakePrometheusTargetCount: 1
   extraArgs:
     - --series-interval=315360000
     - --metric-interval=315360000
