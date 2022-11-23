@@ -89,6 +89,6 @@ kubectl taint nodes "${NODE}" database=true:NoSchedule
 
 By default database and connector pods are configured to tolerate specific taints.
 
-Connector pods by default tolerate `connector=true:NoSchedule` taint. This is done to make sure that connector pods are placed on nodes with database pods.
+Connector pods by default tolerate `connector=true:NoSchedule` taint. This is done to make sure that connector pods are placed on nodes dedicated to them.
 
-Database pods by default tolerate `database=true:NoSchedule` taint. This is done to make sure that database pods are placed on nodes with connector pods.
+Database pods by default tolerate `database=true:NoSchedule` taint. This is done to make sure that database pods are placed on nodes dedicated to them.
