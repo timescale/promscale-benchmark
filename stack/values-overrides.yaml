@@ -12,7 +12,7 @@ timescaledb-single:
     bootstrap:
       dcs:
         postgresql:
-          parameters:
+          parameters: {}
             # track_io_timing: on
 
 # Configuration options are documented at:
