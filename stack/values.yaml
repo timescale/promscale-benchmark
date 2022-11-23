@@ -16,6 +16,10 @@ timescaledb-single:
     requests:
       cpu: 100m
       memory: 2Gi
+  tolerations:
+  - key: "database"
+    operator: "Exists"
+    effect: "NoSchedule"
   affinityTemplate: |
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
@@ -28,6 +32,15 @@ timescaledb-single:
               values:
               - connector
           topologyKey: "kubernetes.io/hostname"
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - database
 
 promscale:
   enabled: true
@@ -51,6 +64,10 @@ promscale:
     startup.dataset.config: |
       metrics:
         default_chunk_interval: 1h
+  tolerations:
+  - key: "connector"
+    operator: "Exists"
+    effect: "NoSchedule"
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
@@ -63,6 +80,15 @@ promscale:
               values:
               - timescaledb
           topologyKey: "kubernetes.io/hostname"
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - connector
 
 kube-prometheus-stack:
   enabled: true
