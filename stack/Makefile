@@ -20,10 +20,13 @@ helm-repo:
 	-helm repo add timescale 'https://charts.timescale.com'
 	helm repo update timescale
 
+values-overrides.yaml:
+	touch $@ || true
+
 .PHONY: install upgrade deploy
 deploy: install
 upgrade: install
-install: cert-manager helm-repo
+install: cert-manager helm-repo values-overrides.yaml
 	helm upgrade --install tobs timescale/tobs \
 		--wait \
 		--timeout 15m \
