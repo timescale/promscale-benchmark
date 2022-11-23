@@ -15,6 +15,7 @@ endpoint in Promscale.
       - [Amazon EKS](#amazon-eks)
     - [Stack installation](#stack-installation)
     - [Updating](#updating)
+    - [Pod placement](#pod-placement)
   - [Benchmark scenarios](#benchmark-scenarios)
     - [Available scenarios](#available-scenarios)
     - [Run a scenario](#run-a-scenario)
@@ -104,6 +105,10 @@ can edit the `stack/values.yaml` file and run:
 ```
 make stack
 ```
+
+### Pod placement
+
+To ensure that pods are placed on nodes we want them to be on we are offering methods described in [docs/pod-placement.md](docs/pod-placement.md).
 
 ## Benchmark scenarios
 
