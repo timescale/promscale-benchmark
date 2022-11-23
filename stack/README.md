@@ -7,6 +7,27 @@ For information on how to configure the stack, see the [tobs documentation](http
 ## Applying custom configuration
 
 To allow customization of the stack and allow easy `git rebase` flow it is recommended
-to use `values-overrides.yaml` file. This file is ignored by git and can be used to override any configuration option in the stack while allowing to keep the original configuration in the `values.yaml` file. It also allows easy sharing of the configuration between different users.
+to use `values-overrides.yaml` file. This file is by ignored by git and can be used to override any configuration option in the stack while allowing to keep the original configuration in the `values.yaml` file. It also allows easy sharing of the configuration between different users.
+
+The file doesn't exist by default and will be created on first run of `helm install` command. Below is an example of the file:
+
+```yaml
+# Configuration options are documented at:
+# https://github.com/timescale/helm-charts/blob/main/charts/timescaledb-single/values.yaml
+timescaledb-single:
+  patroni:
+    bootstrap:
+      dcs:
+        postgresql:
+          parameters:
+            # track_io_timing: on
+
+# Configuration options are documented at:
+# https://github.com/timescale/helm-charts/blob/main/charts/promscale/values.yaml
+promscale:
+  extraEnv: []
+#  config:
+#    startup.dataset.config:
+```
 
 Configuration options from `values-overrides.yaml` are merged with the default configuration from `values.yaml` file and the resulting configuration is used to deploy the stack.

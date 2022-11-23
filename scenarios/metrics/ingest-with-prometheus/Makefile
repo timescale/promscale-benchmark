@@ -12,10 +12,13 @@ helm-repo:
 helm-deps: helm-repo
 	helm dependency update chart/
 
+values-overrides.yaml:
+	touch $@ || true
+
 .PHONY: install upgrade deploy
 deploy: install
 upgrade: install
-install: helm-repo helm-deps
+install: helm-repo helm-deps values-overrides.yaml
 	helm upgrade --install ingest-with-prometheus chart \
 		--wait \
 		--timeout 15m \

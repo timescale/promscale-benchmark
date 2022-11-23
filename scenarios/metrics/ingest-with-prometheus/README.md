@@ -27,3 +27,18 @@ The load generator can be configured by changing options in `values.yaml`. To ap
 ```shell
 make upgrade
 ```
+
+### Applying custom configuration
+
+To allow customization of the stack and allow easy `git rebase` flow it is recommended
+to use `values-overrides.yaml` file. This file is by ignored by git and can be used to override any configuration option in the stack while allowing to keep the original configuration in the `values.yaml` file. It also allows easy sharing of the configuration between different users.
+
+The file doesn't exist by default and will be created on first run of `helm install` command. Below is an example of the file:
+
+```yaml
+prometheus: {}
+
+avalanche: {}
+```
+
+Configuration options from `values-overrides.yaml` are merged with the default configuration from `values.yaml` file and the resulting configuration is used to deploy the stack.
