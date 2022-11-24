@@ -10,12 +10,12 @@ To quickly place pods on specific nodes you can use the following command:
 # Place database on a separate, dedicated node
 DB_NODE=<NODE_NAME>
 kubectl taint nodes "${DB_NODE}" database=true:NoSchedule
-kubectl label node "${DB_NODE}" topology.kubernetes.io/zone=database
+kubectl label node "${DB_NODE}" topology.timescale.com/zone=database
 
 # Place promscale-connector on a separate, dedicated node
 CONNECTOR_NODE=<NODE_NAME>
 kubectl taint nodes "${CONNECTOR_NODE}" connector=true:NoSchedule
-kubectl label node "${CONNECTOR_NODE}" topology.kubernetes.io/zone=connector
+kubectl label node "${CONNECTOR_NODE}" topology.timescale.com/zone=connector
 ```
 
 This will taint nodes and apply labels to them. Tolerations, anti-affinity, and node affinity settings are already applied to the stack.
@@ -52,7 +52,7 @@ We are using the following configuration, example for promscale-connector:
       - weight: 100
         preference:
           matchExpressions:
-          - key: topology.kubernetes.io/zone
+          - key: topology.timescale.com/zone
             operator: In
             values:
             - connector
@@ -65,7 +65,7 @@ To use node affinity, nodes need to have proper labels on them. This can be done
 ```shell
 NODE=<NODE_NAME>
 
-kubectl label node "${NODE}" topology.kubernetes.io/zone=connector
+kubectl label node "${NODE}" topology.timescale.com/zone=connector
 ```
 
 Ideally this is done in conjunction with tainting node as described in [taints](#taints) section.
