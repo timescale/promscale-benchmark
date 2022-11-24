@@ -37,7 +37,7 @@ timescaledb-single:
       - weight: 100
         preference:
           matchExpressions:
-          - key: topology.kubernetes.io/zone
+          - key: topology.timescale.com/zone
             operator: In
             values:
             - database
@@ -85,7 +85,7 @@ promscale:
       - weight: 100
         preference:
           matchExpressions:
-          - key: topology.kubernetes.io/zone
+          - key: topology.timescale.com/zone
             operator: In
             values:
             - connector
