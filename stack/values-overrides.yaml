@@ -1,0 +1,74 @@
+# Apply your stack customization here. This file is not tracked by git.
+
+# If you want to make persistent changes to this file you can do so by using
+# `git update-index --no-assume-unchanged stack/values-overrides.yaml` command,
+# commiting changes, and then disabling file tracking by running
+# `git update-index --assume-unchanged stack/values-overrides.yaml` command.
+
+# Configuration options are documented at:
+# https://github.com/timescale/helm-charts/blob/main/charts/timescaledb-single/values.yaml
+timescaledb-single:
+  resources:
+    requests:
+      cpu: "8"
+      memory: 32Gi
+  persistentVolumes:
+    data:
+      size: 150Gi
+      storageClass: gp3
+    wal:
+      size: 50Gi
+      storageClass: gp3
+  patroni:
+    bootstrap:
+      dcs:
+        postgresql:
+          parameters:
+            checkpoint_timeout: 15min
+            checkpoint_completion_target: 0.9
+            bgwriter_delay: 200ms
+            bgwriter_lru_maxpages: 100
+            bgwriter_flush_after: 512kB
+            # bgwriter_lru_multiplier: 1
+            stats_temp_directory: /dev/shm/pg_stat_temp
+            shared_buffers: 30GB
+            autovacuum_max_workers: 1
+            wal_compression: on
+            max_wal_size: 120GB # for 240K samples/sec
+            synchronous_commit: off
+            archive_mode: off
+            # track_io_timing: on
+            # timescaledb.max_open_chunks_per_insert: 429
+
+# Configuration options are documented at:
+# https://github.com/timescale/helm-charts/blob/main/charts/promscale/values.yaml
+promscale:
+  extraEnv: []
+  resources:
+    requests:
+      memory: 16Gi
+      cpu: "4"
+  # image:
+  #   repository: docker.io/ararunprasad/promscale
+  #   tag: 0.17.0-dev1
+  #   pullPolicy: Always
+  config:
+    vacuum.parallelism: 1
+    startup.dataset.config: |
+      metrics:
+        default_chunk_interval: 1h
+
+kube-prometheus-stack:
+  prometheusOperator:
+    admissionWebhooks:
+      enabled: false
+  prometheus:
+    prometheusSpec:
+      remoteWriteDashboards: true
+      retention: 30d
+  grafana:
+    service:
+      type: LoadBalancer
+
+opentelemetry-operator:
+  enabled: false
