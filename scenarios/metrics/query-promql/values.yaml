@@ -1,6 +1,7 @@
 prometheus:
   version: v2.39.1
   # Configuration options in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.RemoteWriteSpec
+  retention: 2h
   remoteWrite:
   - url: http://tobs-promscale.bench.svc:9201/write
     remoteTimeout: 100s

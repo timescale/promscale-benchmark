@@ -15,7 +15,7 @@ spec:
   {{ .Values.prometheus.remoteWrite | toYaml | nindent 4 }}
   resources:
   {{ .Values.prometheus.resources | toYaml | nindent 4 }}
-  retention: 1d
+  retention: {{ .Values.prometheus.retention }}
   serviceMonitorSelector:
     matchLabels:
       app.kubernetes.io/part-of: ingest-with-prometheus
