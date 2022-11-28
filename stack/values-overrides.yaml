@@ -56,7 +56,7 @@ promscale:
     vacuum.parallelism: 1
     startup.dataset.config: |
       metrics:
-        default_chunk_interval: 1h
+        default_chunk_interval: 45m
 
 kube-prometheus-stack:
   prometheusOperator:

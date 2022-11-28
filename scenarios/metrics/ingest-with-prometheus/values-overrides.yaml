@@ -12,8 +12,8 @@ prometheus:
     remoteTimeout: 100s
     # Configuration options in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#queueconfig
     queueConfig:
-      maxShards: 60
-      maxSamplesPerSend: 10000
+      maxShards: 200
+      maxSamplesPerSend: 1000
   resources:
     requests:
       cpu: 2
@@ -21,7 +21,7 @@ prometheus:
 
 avalanche:
   replicaCount: 1
-  fakePrometheusTargetCount: 12
+  fakePrometheusTargetCount: 13
   extraArgs:
     - --series-interval=315360000
     - --metric-interval=315360000
