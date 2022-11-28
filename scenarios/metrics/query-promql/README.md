@@ -4,6 +4,8 @@ This benchmarking scenario is meant to test the performance of Promscale metrics
 
 Prometheus is deployed using kubernetes Custom Resource and it is managed by prometheus-operator shipped with tobs.
 
+PromQl queries used for benchmarking are mostly taken from our existing Grafana Dashboards. Query load is produced using Locust(https://locust.io). For more details about query benchmarking look into `locustfile.py` and `value.yaml`.
+
 _Warning: This scenario is ingesting data from node_exporters running in the cluster. As such ingested data volume depends on number of nodes. This in turn can have impact on query capabilities._
 
 ## How to run
@@ -14,7 +16,7 @@ To start the load generator execute the following command:
 make
 ```
 
-This will create a namespace `metrics-ingest-direct` and deploy avalanche to it. Alternativelly, you can put this load generator in a different namespace, for example `benchmark`, by running:
+This will create a namespace `metrics-query-promql` and deploy Locust to it. Alternativelly, you can put this load generator in a different namespace, for example `benchmark`, by running:
 
 ```shell
 

@@ -1,3 +1,7 @@
 apiVersion: v2
 name: query-promql
 version: 0.0.1
+dependencies:
+  - name: locust
+    repository: https://charts.deliveryhero.io
+    version: ">=0.30.0"

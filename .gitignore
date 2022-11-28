@@ -2,3 +2,4 @@ helm/charts/benchmark/charts
 *.tgz
 *.lock
 values-overrides.yaml
+.DS_Store
