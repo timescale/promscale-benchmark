@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-locustfile
+  labels:
+    app.kubernetes.io/part-of: query-promql
+data:
+  locustfile.py: |-
+{{ .Files.Get "locust/locustfile.py" | indent 4 }}

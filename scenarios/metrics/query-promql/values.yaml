@@ -5,19 +5,29 @@ prometheus:
   remoteWrite:
   - url: http://tobs-promscale.bench.svc:9201/write
     remoteTimeout: 100s
-    # Configuration options in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#queueconfig
-    queueConfig:
-      capacity: 100000
-      minShards: 20
-      maxShards: 20
-      maxSamplesPerSend: 10000
-      batchSendDeadline: 30s
-      minBackoff: 100ms
-      maxBackoff: 10s
+    queueConfig: null
   resources:
     requests:
       cpu: 40m
       memory: 400Mi
 
-# TODO: add querier configuation options
-# querier:
+
+# We use Locust(https://locust.io/) to simulate query load
+locust:
+  loadtest:
+    # loadtest.name -- a name used for resources and settings in this load test
+    name: promscale
+    # loadtest.locust_locustfile -- the name of the locustfile
+    locust_locustfile: locustfile.py
+    # loadtest.locust_locustfile_path -- the path of the locustfile (without trailing backslash)
+    locust_locustfile_path: "/mnt/locust"
+    # loadtest.locust_locustfile_configmap -- name of a configmap containing your locustfile (default uses the example locustfile)
+    locust_locustfile_configmap: "query-promql-locustfile"
+    # loadtest.locust_host -- the host you will load test
+    locust_host: http://tobs-promscale.bench.svc:9201
+    # we want to start load testing once Locust is deployed
+    headless: true
+    # when running in headless mode we need to pass in all arguents through command line
+    # if we run in non headless mode we can just comment out `locustCmd`
+    locustCmd: /opt/venv/bin/locust -f /mnt/locust/locustfile.py --headless --users 3 --spawn-rate 1 -H http://tobs-promscale.bench.svc:9201
+
