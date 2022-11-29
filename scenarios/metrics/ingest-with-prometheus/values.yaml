@@ -13,7 +13,7 @@ prometheus:
       batchSendDeadline: 30s
       minBackoff: 100ms
       maxBackoff: 10s
-  retention: 1d
+  retention: 2h
   resources:
     requests:
       cpu: 40m
