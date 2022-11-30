@@ -7,21 +7,24 @@
 
 prometheus:
   # Configuration options in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.RemoteWriteSpec
+  retention: 2h
   remoteWrite:
   - url: http://tobs-promscale.bench.svc:9201/write
     remoteTimeout: 100s
     # Configuration options in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#queueconfig
     queueConfig:
       maxShards: 200
-      maxSamplesPerSend: 1000
+      maxSamplesPerSend: 6000
   resources:
     requests:
       cpu: 2
       memory: 12Gi
 
 avalanche:
+  serviceMonitor:
+    interval: 15s
   replicaCount: 1
-  fakePrometheusTargetCount: 13
+  fakePrometheusTargetCount: 4
   extraArgs:
     - --series-interval=315360000
     - --metric-interval=315360000

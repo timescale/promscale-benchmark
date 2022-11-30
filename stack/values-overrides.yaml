@@ -14,10 +14,10 @@ timescaledb-single:
       memory: 32Gi
   persistentVolumes:
     data:
-      size: 150Gi
+      size: 1Ti
       storageClass: gp3
     wal:
-      size: 50Gi
+      size: 150Gi
       storageClass: gp3
   patroni:
     bootstrap:
@@ -36,7 +36,7 @@ timescaledb-single:
             wal_compression: on
             max_wal_size: 120GB # for 240K samples/sec
             synchronous_commit: off
-            archive_mode: off
+            # archive_mode: off
             # track_io_timing: on
             # timescaledb.max_open_chunks_per_insert: 429
 
@@ -48,15 +48,15 @@ promscale:
     requests:
       memory: 16Gi
       cpu: "4"
-  # image:
-  #   repository: docker.io/ararunprasad/promscale
-  #   tag: 0.17.0-dev1
-  #   pullPolicy: Always
+  image:
+    repository: docker.io/ararunprasad/promscale
+    tag: 0.17.0-dev2
+    pullPolicy: Always
   config:
     vacuum.parallelism: 1
     startup.dataset.config: |
       metrics:
-        default_chunk_interval: 45m
+        default_chunk_interval: 30m
 
 kube-prometheus-stack:
   prometheusOperator:
