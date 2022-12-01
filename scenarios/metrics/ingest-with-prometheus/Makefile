@@ -1,4 +1,4 @@
-NS="metrics-ingest-with-prometheus"
+NS="bench"
 
 .PHONY: all
 all: install

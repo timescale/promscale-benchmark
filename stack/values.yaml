@@ -3,15 +3,25 @@
 # `main` branch is updated. This in turn allows for easier `git rebase` operation.
 
 timescaledb-single:
+  image:
+    repository: ghcr.io/timescale/dev_promscale_extension
+    tag: benchmark_rollups-ts2.8.1-pg14
+    pullPolicy: Always
   enabled: true
   replicaCount: 1
   backup:
     enabled: false
   persistentVolumes:
     data:
-      size: 150Gi
+      size: 700Gi
     wal:
       size: 20Gi
+  patroni:
+    bootstrap:
+      dcs:
+        postgresql:
+          parameters:
+            max_locks_per_transaction: 512
   resources:
     requests:
       cpu: 100m
@@ -46,14 +56,13 @@ promscale:
   enabled: true
   # If you want to use a different image, you can do so here.
   image:
-    repository: timescale/promscale
-  #   tag: 0.14.0
-    pullPolicy: IfNotPresent
+    repository: harkishen/promscale
+    tag: feature_metric_rollup
+    pullPolicy: Always
   extraArgs:
     - "--metrics.high-availability=false"
-  extraEnv:
-    - name: PROMSCALE_TELEMETRY_TRACE_JAEGER_ENDPOINT
-      value: http://jaeger-collector.tracing.svc.cluster.local:14268/api/traces
+    - "--startup.upgrade-prerelease-extensions=true"
+    - "--metrics.cache.series.initial-size=5000000"
   connectionSecretName: "tobs-promscale-connection"
   resources:
     requests:
@@ -64,6 +73,15 @@ promscale:
     startup.dataset.config: |
       metrics:
         default_chunk_interval: 1h
+        downsample:
+          automatic: true
+          resolutions:
+          - label: short
+            resolution: 5m
+            retention: 30d
+          - label: long
+            resolution: 1h
+            retention: 365d
   tolerations:
   - key: "connector"
     operator: "Exists"

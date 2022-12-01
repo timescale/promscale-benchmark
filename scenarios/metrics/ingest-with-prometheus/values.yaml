@@ -1,6 +1,7 @@
 prometheus:
   version: v2.39.1
   # Configuration options in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.RemoteWriteSpec
+  retention: 4w
   remoteWrite:
   - url: http://tobs-promscale.bench.svc:9201/write
     remoteTimeout: 100s
@@ -8,12 +9,14 @@ prometheus:
     queueConfig:
       capacity: 100000
       minShards: 20
-      maxShards: 20
+      maxShards: 40
       maxSamplesPerSend: 10000
       batchSendDeadline: 30s
       minBackoff: 100ms
       maxBackoff: 10s
-  retention: 2h
+    metadataConfig:
+      send: true
+      sendInterval: 1m
   resources:
     requests:
       cpu: 40m
@@ -38,8 +41,8 @@ avalanche:
     # 30s by Prometheus.
     # To increase the load, we can simply increase the value of
     # replicaCount in avalanche values.
-    - --metric-count=5000
-    - --series-count=120
+    - --metric-count=4000
+    - --series-count=150
     - --label-count=10
     - --value-interval=10
   labels:
