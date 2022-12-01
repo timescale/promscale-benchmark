@@ -16,6 +16,7 @@ spec:
   resources:
   {{ .Values.prometheus.resources | toYaml | nindent 4 }}
   retention: {{ .Values.prometheus.retention }}
+  walCompression: true
   serviceMonitorSelector:
     matchLabels:
       app.kubernetes.io/part-of: ingest-with-prometheus

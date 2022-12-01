@@ -34,8 +34,9 @@ timescaledb-single:
             shared_buffers: 30GB
             autovacuum_max_workers: 1
             wal_compression: on
-            max_wal_size: 120GB # for 240K samples/sec
+            max_wal_size: 140GB # for 240K samples/sec
             synchronous_commit: off
+            # log_min_messages: DEBUG1
             # archive_mode: off
             # track_io_timing: on
             # timescaledb.max_open_chunks_per_insert: 429
