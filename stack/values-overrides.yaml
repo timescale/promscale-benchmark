@@ -19,6 +19,9 @@ timescaledb-single:
     wal:
       size: 150Gi
       storageClass: gp3
+  service:
+    primary:
+      type: LoadBalancer
   patroni:
     bootstrap:
       dcs:
@@ -36,6 +39,7 @@ timescaledb-single:
             wal_compression: on
             max_wal_size: 140GB # for 240K samples/sec
             synchronous_commit: off
+            pg_stat_statements.track: all
             # log_min_messages: DEBUG1
             # archive_mode: off
             # track_io_timing: on

@@ -17,6 +17,21 @@ spec:
   {{ .Values.prometheus.resources | toYaml | nindent 4 }}
   retention: {{ .Values.prometheus.retention }}
   walCompression: true
+  securityContext:
+      fsGroup: 2000
+      runAsGroup: 2000
+      runAsNonRoot: true
+      runAsUser: 1000
+  storage:
+    disableMountSubPath: true
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 150Gi
+
   serviceMonitorSelector:
     matchLabels:
       app.kubernetes.io/part-of: ingest-with-prometheus
