@@ -8,16 +8,28 @@
 # Configuration options are documented at:
 # https://github.com/timescale/helm-charts/blob/main/charts/timescaledb-single/values.yaml
 timescaledb-single:
+  image:
+    # Image was built from
+    # https://github.com/timescale/timescaledb-docker-ha
+    # http://docker.io/antekresic/timescaledb-ha:pg14-ts-main-merge-chunks
+    # docker pull antekresic/timescaledb-ha:pg14-ts-rel-2.9.0
+    repository: antekresic/timescaledb-ha
+    # tag: pg14.5-ts2.8.1-p1
+    # tag: pg14-ts-main-merge-chunks
+    # tag: pg14-ts-rel-2.9.0
+    tag: pg14-ts-rel-2.9.0-fix
+    pullPolicy: Always
+
   resources:
     requests:
       cpu: "8"
       memory: 32Gi
   persistentVolumes:
     data:
-      size: 1Ti
+      size: 2Ti
       storageClass: gp3
     wal:
-      size: 150Gi
+      size: 200Gi
       storageClass: gp3
   service:
     primary:
@@ -59,6 +71,8 @@ promscale:
     pullPolicy: Always
   config:
     vacuum.parallelism: 1
+    startup.upgrade-prerelease-extensions: true
+    metrics.cache.series.initial-size: 15000000
     startup.dataset.config: |
       metrics:
         default_chunk_interval: 30m
