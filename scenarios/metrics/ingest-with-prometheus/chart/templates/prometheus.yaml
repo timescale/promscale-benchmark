@@ -8,7 +8,6 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: ingest-with-prometheus
 spec:
-  scrapeTimeout: 5m
   version: {{ .Values.prometheus.version }}
   image: "quay.io/prometheus/prometheus:{{ .Values.prometheus.version }}"
   replicas: 1

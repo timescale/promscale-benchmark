@@ -41,7 +41,7 @@ avalanche:
     # To increase the load, we can simply increase the value of
     # replicaCount in avalanche values.
     - --metric-count=5000
-    - --series-count=400
+    - --series-count=800
     - --label-count=1
     - --value-interval=10
   labels:
@@ -49,5 +49,7 @@ avalanche:
     app.kubernetes.io/part-of: ingest-with-prometheus
   serviceMonitor:
     enabled: true
+    interval: 30s
+    scrapeTimeout: 30s
   serviceAccount:
     create: true
