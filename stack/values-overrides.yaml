@@ -13,11 +13,13 @@ timescaledb-single:
     # https://github.com/timescale/timescaledb-docker-ha
     # http://docker.io/antekresic/timescaledb-ha:pg14-ts-main-merge-chunks
     # docker pull antekresic/timescaledb-ha:pg14-ts-rel-2.9.0
-    repository: antekresic/timescaledb-ha
+    # repository: antekresic/timescaledb-ha
+    repository: cevian/timescaledb-ha
     # tag: pg14.5-ts2.8.1-p1
     # tag: pg14-ts-main-merge-chunks
     # tag: pg14-ts-rel-2.9.0
-    tag: pg14-ts-rel-2.9.0-fix
+    # tag: pg14-ts-rel-2.9.0-fix
+    tag: ts2.9-prom3531b7
     pullPolicy: Always
 
   resources:
@@ -47,9 +49,9 @@ timescaledb-single:
             # bgwriter_lru_multiplier: 1
             stats_temp_directory: /dev/shm/pg_stat_temp
             shared_buffers: 30GB
-            autovacuum_max_workers: 1
+            # autovacuum_max_workers: 1
             wal_compression: on
-            max_wal_size: 140GB # for 240K samples/sec
+            max_wal_size: 180GB # for 240K samples/sec
             synchronous_commit: off
             pg_stat_statements.track: all
             # log_min_messages: DEBUG1
@@ -67,10 +69,11 @@ promscale:
       cpu: "4"
   image:
     repository: docker.io/ararunprasad/promscale
-    tag: 0.17.0-dev2
+    tag: 0.17.0-dev3
     pullPolicy: Always
   config:
-    vacuum.parallelism: 1
+    telemetry.log.level: debug
+    # vacuum.parallelism: 1
     startup.upgrade-prerelease-extensions: true
     metrics.cache.series.initial-size: 15000000
     startup.dataset.config: |

@@ -14,7 +14,7 @@ prometheus:
     # Configuration options in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#queueconfig
     queueConfig:
       maxShards: 200
-      maxSamplesPerSend: 6000
+      maxSamplesPerSend: 10000
   resources:
     requests:
       cpu: 17
