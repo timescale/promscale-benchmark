@@ -110,7 +110,7 @@ can do so by running the following:
 2. Change the nodegroup:
 
     ```shell
-    eksctl scale nodegroup --cluster "$NAME" --region "$REGION" --node-type m5.xlarge --nodes 5 --nodes-min 1 --nodes-max 5 --name <nodegroup-name>
+    eksctl scale nodegroup --cluster "$NAME" --region "$REGION" --nodes 5 --nodes-min 1 --nodes-max 5 --name <nodegroup-name>
     ```
 
 3. Wait until the nodes are up and running:
