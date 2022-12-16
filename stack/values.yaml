@@ -20,7 +20,7 @@ timescaledb-single:
   - key: "database"
     operator: "Exists"
     effect: "NoSchedule"
-  affinityTemplate: |
+  affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
