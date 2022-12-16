@@ -6,6 +6,9 @@ help:  ## Displays help.
 grafana:  ## Setup local grafana port-forwarding.
 	kubectl port-forward -n bench svc/tobs-grafana 8080:80
 
+grafana-1:  ## Setup local grafana port-forwarding.
+	kubectl port-forward -n bench svc/tobs-grafana 8081:80
+
 .PHONY: start-kind
 start-kind: delete-kind  ## Create a local kubernetes kind cluster.
 	kind create cluster --config kind-config.yaml

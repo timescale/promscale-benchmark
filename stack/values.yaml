@@ -5,7 +5,7 @@
 timescaledb-single:
   image:
     repository: ghcr.io/timescale/dev_promscale_extension
-    tag: benchmark_rollups-ts2.8.1-pg14
+    tag: rollups-development-ts2.8.1-pg14
     pullPolicy: Always
   enabled: true
   replicaCount: 1
@@ -74,7 +74,7 @@ promscale:
       metrics:
         default_chunk_interval: 1h
         downsample:
-          automatic: true
+          automatic: false
           resolutions:
           - label: short
             resolution: 5m

@@ -9,7 +9,7 @@ prometheus:
     queueConfig:
       capacity: 100000
       minShards: 20
-      maxShards: 40
+      maxShards: 200
       maxSamplesPerSend: 10000
       batchSendDeadline: 30s
       minBackoff: 100ms
@@ -19,11 +19,10 @@ prometheus:
       sendInterval: 1m
   resources:
     requests:
-      cpu: 40m
-      memory: 400Mi
+      cpu: "8"
+      memory: 16Gi
 
 avalanche:
-  enabled: true
   image:
     repository: quay.io/prometheuscommunity/avalanche
     tag: main
@@ -41,9 +40,9 @@ avalanche:
     # 30s by Prometheus.
     # To increase the load, we can simply increase the value of
     # replicaCount in avalanche values.
-    - --metric-count=4000
-    - --series-count=150
-    - --label-count=10
+    - --metric-count=5000
+    - --series-count=400
+    - --label-count=1
     - --value-interval=10
   labels:
     tobs/excluded: "true"
