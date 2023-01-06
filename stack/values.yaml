@@ -64,6 +64,7 @@ promscale:
     startup.dataset.config: |
       metrics:
         default_chunk_interval: 1h
+        default_retention_period: 4d
   tolerations:
   - key: "connector"
     operator: "Exists"

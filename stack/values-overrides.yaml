@@ -14,12 +14,14 @@ timescaledb-single:
     # http://docker.io/antekresic/timescaledb-ha:pg14-ts-main-merge-chunks
     # docker pull antekresic/timescaledb-ha:pg14-ts-rel-2.9.0
     # repository: antekresic/timescaledb-ha
-    repository: cevian/timescaledb-ha
+    # repository: cevian/timescaledb-ha
+    # repository: ararunprasad/timescaledb-ha
     # tag: pg14.5-ts2.8.1-p1
     # tag: pg14-ts-main-merge-chunks
     # tag: pg14-ts-rel-2.9.0
     # tag: pg14-ts-rel-2.9.0-fix
-    tag: ts2.9-prom3531b7
+    # tag: ts2.9-prom3531b7
+    # tag: ts-2.9.0-extension-master-0
     pullPolicy: Always
 
   resources:
@@ -28,7 +30,7 @@ timescaledb-single:
       memory: 32Gi
   persistentVolumes:
     data:
-      size: 2Ti
+      size: 1Ti
       storageClass: gp3
     wal:
       size: 200Gi
@@ -47,8 +49,9 @@ timescaledb-single:
             bgwriter_lru_maxpages: 100
             bgwriter_flush_after: 512kB
             # bgwriter_lru_multiplier: 1
-            stats_temp_directory: /dev/shm/pg_stat_temp
-            shared_buffers: 30GB
+            # stats_temp_directory: /dev/shm/pg_stat_temp
+            stats_temp_directory: pg_stat_temp
+            shared_buffers: 45GB
             # autovacuum_max_workers: 1
             wal_compression: on
             max_wal_size: 180GB # for 240K samples/sec
@@ -68,17 +71,17 @@ promscale:
       memory: 16Gi
       cpu: "4"
   image:
-    repository: docker.io/ararunprasad/promscale
-    tag: 0.17.0-dev3
+    # repository: docker.io/ararunprasad/promscale
+    # tag: 0.17.0-dev4
     pullPolicy: Always
   config:
     telemetry.log.level: debug
     # vacuum.parallelism: 1
     startup.upgrade-prerelease-extensions: true
-    metrics.cache.series.initial-size: 15000000
+      # metrics.cache.series.initial-size: 500000
     startup.dataset.config: |
       metrics:
-        default_chunk_interval: 30m
+        default_chunk_interval: 8h
 
 kube-prometheus-stack:
   prometheusOperator:
@@ -89,6 +92,10 @@ kube-prometheus-stack:
       remoteWriteDashboards: true
       retention: 30d
   grafana:
+    env:
+      GF_SNAPSHOTS_EXTERNAL_ENABLED: true
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
     service:
       type: LoadBalancer
 
